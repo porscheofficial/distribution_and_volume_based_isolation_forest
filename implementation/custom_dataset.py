@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 
-from isolation_forest_helper_funcs import train_IF, debug_tree, anomaly_detection_results_visualisation, iterate_through_tree
+# from Isolation_forest_helper_funcs import train_IF, debug_tree, anomaly_detection_results_visualisation, iterate_through_tree
 
 # TODO: add c
 class SyntheticDatasetGenerator:
@@ -34,7 +34,7 @@ class SyntheticDatasetGenerator:
         ax.legend()
         plt.show()
 
-    def custom_dataset_generation(self, mean=0.0,std=0.0,generated_samples=10000):
+    def custom_dataset_generation(self, mean=0.0, std=0.0, generated_samples=10000):
         normal_distribution = np.random.normal(mean, std, generated_samples)
         dst = pd.DataFrame({'number': normal_distribution})
         self.plot_histogram_of_data(normal_distribution)

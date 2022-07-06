@@ -7,8 +7,8 @@ import random
 
 from sklearn.ensemble import IsolationForest
 
-from custom_dataset import generate_dataset, custom_dataset_generation, plot_histogram_of_datasets
-from isolation_forest_helper_funcs import iterate_through_tree, anomaly_detection_results_visualisation, train_IF
+#from custom_dataset import generate_dataset, custom_dataset_generation, plot_histogram_of_datasets
+#from isolation_forest_helper_funcs import iterate_through_tree, anomaly_detection_results_visualisation, train_IF
 
 
 class PacRpad:
@@ -20,36 +20,36 @@ class PacRpad:
         self.dataset = None
         self.model = None 
 
-        self.U.h = None
+        self.U_h = None
         self.H = None
         
 
-    def has_rare_pattern(self, x,D,H_hat,mu):
-        '''
-        x : datapoint
-        D : trained set 
-        H : pattern space 
-        mu : Threshold for the estimated frequency of a pattern to be detected :  tau + epsilon/2
-        '''
-        U_h = calculate_U_h(x, H)
+    # def has_rare_pattern(self, x,D,H_hat,mu):
+    #     '''
+    #     x : datapoint
+    #     D : trained set 
+    #     H : pattern space 
+    #     mu : Threshold for the estimated frequency of a pattern to be detected :  tau + epsilon/2
+    #     '''
+    #     U_h = calculate_U_h(x, H)
 
-        rare = False 
+    #     rare = False 
 
 	# size_D = calculate_size_of_training_data_set(D) # |D| # (length of D)
     # TODO: revisit this part
-	for pattern_counter, h in enumerate(H): 
+	# for pattern_counter, h in enumerate(H): 
 
-		# estimate the normalized pattern probiblites (f_hat) using the patterns h that that satistfy h(x) == 1  
-		estimated_pattern_probability = calculate_f_hat(x, h, D, U_h)
+	# 	# estimate the normalized pattern probiblites (f_hat) using the patterns h that that satistfy h(x) == 1  
+	# 	estimated_pattern_probability = calculate_f_hat(x, h, D, U_h)
 
-		# decision_rule: detect x as anomaleous if any estimated normalized pattern probability is smaller than mu (f_hat(h) < mu)
-		if estimated_pattern_probability < mu:
-			rare = True # (anomaly)
-			break
+	# 	# decision_rule: detect x as anomaleous if any estimated normalized pattern probability is smaller than mu (f_hat(h) < mu)
+	# 	if estimated_pattern_probability < mu:
+	# 		rare = True # (anomaly)
+	# 		break
 
-	decision.append(estimated_pattern_probability, rare)
+	#decision.append(estimated_pattern_probability, rare)
 
-	return rare
+	#return rare
 	
 	
     def find_pattern_index(self, data_point, filtered_sorted_thresholds):
@@ -111,9 +111,9 @@ class PacRpad:
 def main():
     sim = PacRpad(epsilon=0.1,delta=0.1,mu=0.1)
 
-    dataset = custom_dataset_generation(mean=15,std=1,generated_samples=10000)
-    model, dataset_post_detection = train_IF(dataset, n_estimators=2)
-    anomaly_detection_results_visualisation(dataset_post_detection)
+    #dataset =  custom_dataset_generation(mean=15,std=1,generated_samples=10000)
+    #model, dataset_post_detection = train_IF(dataset, n_estimators=2)
+    #anomaly_detection_results_visualisation(dataset_post_detection)
 
 
 if __name__ == "__main__":
