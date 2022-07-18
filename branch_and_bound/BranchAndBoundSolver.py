@@ -20,7 +20,7 @@ class BranchAndBoundSolver(pybnb.Problem):
         return pybnb.minimize
 
     def objective(self):
-        return np.float(1. * len(self.points) / (self.pattern.area * self.N))
+        return np.float(len(self.points * self.bounding_area)/ (self.pattern.area * self.N))
 
     def bound(self):
         return np.float(1. * self.bounding_area / (self.pattern.area * self.N))
