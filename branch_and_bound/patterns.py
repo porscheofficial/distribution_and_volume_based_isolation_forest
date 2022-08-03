@@ -25,3 +25,15 @@ class AxisAlignedHyperRectangle:
 def find_bounding_pattern(points: np.ndarray) -> AxisAlignedHyperRectangle:
     intervals = np.sort(points, axis=0)[[0, -1], :]
     return AxisAlignedHyperRectangle(intervals.T)
+
+
+def find_smallest_encompassing_pattern(points, point):
+    distances = points - point  # For each point the difference to the corresponding point coordinate
+    d = points.shape[1]
+    move_counter = np.zeros((d, 2), dtype='int')
+    for j in range(2):
+        cond = (lambda x: np.argmax(x[x < 0])) if (j == 1) else (lambda x: np.argmin(x[x > 0]))
+        move_counter[:, j] = np.apply_along_axis(cond, 0, distances)
+
+    pattern = AxisAlignedHyperRectangle(intervals=points[move_counter])
+    return pattern, move_counter
