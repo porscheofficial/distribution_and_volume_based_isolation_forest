@@ -36,8 +36,13 @@ class BranchAndBoundSolver(pybnb.Problem, ABC):
     def objective(self):
         # note that this is slightly inaccurate, namely when the point to be classified is in the pattern and sits
         # on the boundary.
+        non_removed_points = np.count_nonzero(self.removed_points == False)
+        if self.point_in_training & (self.point_to_be_classified in self.points[self.removed_points]):
+            contained_points = non_removed_points + 1
+        else:
+            contained_points = non_removed_points
         return np.float(
-            np.count_nonzero(self.removed_points == False) * self.bounding_area / (self.pattern.area * self.N)
+            contained_points * self.bounding_area / (self.pattern.area * self.N)
         )
 
     def save_state(self, node):
