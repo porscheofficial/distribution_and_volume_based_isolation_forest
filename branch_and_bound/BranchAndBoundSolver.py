@@ -62,10 +62,6 @@ class BranchAndBoundSolver(pybnb.Problem, ABC):
         side = idx % 2
         i = (idx - side) // 2
         child_counter = deepcopy(self.move_counter)
-        # before_argsort = rankmin(child_counter)
-
-        # print(f"before {before_argsort}")
-
         match (sense, side):
             case ("in", 0) | ("out", 1):
                 child_counter[i, side] += 1
@@ -120,6 +116,7 @@ class BranchAndBoundBottomUp(BranchAndBoundSolver):
     def __init__(self, training_data, point_to_be_classified, min_area_factor):
         super().__init__(training_data, point_to_be_classified, min_area_factor)
         self.pattern, self.move_counter = find_smallest_encompassing_pattern(self.points, self.point_to_be_classified)
+        print(f"bounding_pattern {self.bounding_pattern.intervals}")
         print(f"pattern {self.pattern.intervals}")
         print(f"move=counter {self.move_counter}")
         self.removed_points = np.zeros(len(self.points), dtype=bool)
@@ -141,6 +138,7 @@ class BranchAndBoundBottomUp(BranchAndBoundSolver):
             side = idx % 2
             i = (idx - side) // 2
             maximal_pattern.intervals[i, side] = self.bounding_pattern.intervals[i, side]
+        print(f"max pattern {maximal_pattern.intervals}")
         return np.float(
             np.count_nonzero(self.removed_points == False) * self.bounding_area / (maximal_pattern.area * self.N)
         )

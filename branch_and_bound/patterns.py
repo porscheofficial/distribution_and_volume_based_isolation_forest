@@ -1,4 +1,5 @@
 import numpy as np
+import numpy.ma as ma
 
 
 class AxisAlignedHyperRectangle:
@@ -31,9 +32,17 @@ def find_smallest_encompassing_pattern(points, point):
     distances = points - point  # For each point the difference to the corresponding point coordinate
     d = points.shape[1]
     move_counter = np.zeros((d, 2), dtype='int')
+    intervals = np.zeros((d, 2))
     for j in range(2):
-        cond = (lambda x: np.argmax(x[x < 0])) if (j == 1) else (lambda x: np.argmin(x[x > 0]))
-        move_counter[:, j] = np.apply_along_axis(cond, 0, distances)
+        if j == 0:
+            cond = lambda x: np.argmax(ma.masked_less_equal(x, 0, 0))
+        else:
+            cond = lambda x: np.argmin(ma.masked_greater(x, 0, 0))
+        indices = np.apply_along_axis(cond, 0, distances)
+        move_counter[:, j] = indices
+        values = points[indices]
+        intervals[:, j] = values[:, j]
 
-    pattern = AxisAlignedHyperRectangle(intervals=points[move_counter])
+    pattern = AxisAlignedHyperRectangle(intervals=intervals)
+
     return pattern, move_counter
