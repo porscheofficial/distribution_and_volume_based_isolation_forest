@@ -9,11 +9,12 @@ import random
 # TODO: add c
 class SyntheticDatasetGenerator:
 
-    def label_dataset(self, normal_distribution, samples):
+    @staticmethod
+    def label_dataset(normal_distribution, samples):
         # sample 90% from normal dataset
         numbers = random.sample(list(normal_distribution), samples)
 
-        # no for not an outlier 
+        # no for not an outlier
         labels = ["no" for _ in numbers]
 
         # Create df with two columns (number, label)
@@ -27,7 +28,7 @@ class SyntheticDatasetGenerator:
 
         return df
 
-    def plot_histogram_of_data(self, dataset):    
+    def plot_histogram_of_data(self, dataset):
         _, ax = plt.subplots(1,1,figsize=(12,8))
         sns.histplot(dataset, ax=ax, shrink=0.8, stat='count').set(title=f"Non outliers: Data distribution for mean:{dataset.mean()} and std:{dataset.std()}")
         ax.axvline(dataset.mean(), color='green', label='mean')
@@ -39,5 +40,5 @@ class SyntheticDatasetGenerator:
         dst = pd.DataFrame({'number': normal_distribution})
         self.plot_histogram_of_data(normal_distribution)
         # func to label dataset
-        labeled_dataset = self.label_dataset(normal_distribution, samples=generated_samples) 
+        labeled_dataset = self.label_dataset(normal_distribution, samples=generated_samples)
         return dst
