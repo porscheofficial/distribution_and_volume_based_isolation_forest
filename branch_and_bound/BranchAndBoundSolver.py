@@ -13,8 +13,8 @@ class BranchAndBoundSolver(pybnb.Problem, ABC):
                  point_to_be_classified: np.ndarray,
                  min_area_factor: np.float):
         """
-        :param training_data: the training data as an ndarray of shape (N,d)
-        :param point_to_be_classified: a single point as an ndarray of shape (1,d).
+        :param training_data: the training data as an ndarray of shape (Nrange,drange)
+        :param point_to_be_classified: a single point as an ndarray of shape (1,drange).
         :param min_area_factor: the fraction of the bounding_area that any patter has to have.
         """
         self.points = training_data
@@ -94,7 +94,7 @@ class BranchAndBoundSolver(pybnb.Problem, ABC):
 class BranchAndBoundTopDown(BranchAndBoundSolver):
     def __init__(self, training_data, point_to_be_classified, min_area_factor):
         super().__init__(training_data, point_to_be_classified, min_area_factor)
-        # this counts the number of moves per dimension and hence is an integer-valued (d,2) matrix
+        # this counts the number of moves per dimension and hence is an integer-valued (drange,2) matrix
         self.pattern = self.bounding_pattern
         self.move_counter = np.zeros((self.d, 2), dtype='int')
         self.move_counter[:, 1] = -1
@@ -105,7 +105,7 @@ class BranchAndBoundTopDown(BranchAndBoundSolver):
 
     def branch(self):
         """
-        For the space of d-dimensional axis aligned hyper rectangles, branch will create [2d] children, one for each
+        For the space of drange-dimensional axis aligned hyper rectangles, branch will create [2d] children, one for each
         side of the existing pattern.
         """
         for idx in range(self.leading_index, 2 * self.d):
@@ -128,7 +128,7 @@ class BranchAndBoundBottomUp(BranchAndBoundSolver):
 
     def branch(self):
         """
-        For the space of d-dimensional axis aligned hyper rectangles, branch will create [2d] children, one for each
+        For the space of drange-dimensional axis aligned hyper rectangles, branch will create [2d] children, one for each
         side of the existing pattern.
         """
         for idx in range(self.leading_index, 2 * self.d):
