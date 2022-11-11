@@ -7,7 +7,9 @@ def minlp_has_rare_pattern(x, training_data, pattern_space: PatternSpace, mu):
     min_area = pattern_space.cutoff  # @TODO: Replace with dynamic area calculation
     m = MINLPModel(training_data, min_area)
     s = m.classify(x)  # TODO: Parse solution output
-    return s < mu
+    # print(" mu: ", mu)
+    # print("s < mu: ",s < mu)
+    return s <= mu
 
 
 class MINLPModel:
@@ -38,7 +40,7 @@ class MINLPModel:
         model.matrix = pyo.Set(initialize=model.d_dimension * range(2))
 
         # TODO: simplify with np.apply_along_axis
-        def _adjust_pattern_bounds(model, i, j):
+        def _adjust_largest_pattern_bounds(model, i, j):
             # print("i,j: ",i,j)
             if (i, j) == (0, 0):
                 min_b = np.min(self.training_set[:, i])
@@ -54,7 +56,7 @@ class MINLPModel:
                 max_b = np.max(self.training_set[:, j])
             return (min_b, max_b)
 
-        model.pattern = pyo.Var(model.matrix, bounds=_adjust_pattern_bounds)
+        model.pattern = pyo.Var(model.matrix, bounds=_adjust_largest_pattern_bounds)
 
         # y is a boolean vector of size N
         model.included = pyo.Var(self.Nrange, within=pyo.Binary, initialize=0)
@@ -96,8 +98,8 @@ class MINLPModel:
                 model.enforce_point_left_of_pattern.add(
                     self.training_set[j, i] + 1e-3
                     <= (
-                            model.pattern[0, i]
-                            + (1 - model.point_left_of_pattern[j, i]) * M
+                        model.pattern[0, i]
+                        + (1 - model.point_left_of_pattern[j, i]) * M
                     )
                 )
                 model.enforce_point_right_of_pattern.add(
@@ -106,8 +108,8 @@ class MINLPModel:
                 )
                 model.enforce_point_right_of_pattern.add(
                     (
-                            (1 - model.point_right_of_pattern[j, i]) * M
-                            + self.training_set[j, i]
+                        (1 - model.point_right_of_pattern[j, i]) * M
+                        + self.training_set[j, i]
                     )
                     >= (model.pattern[1, i] + 1e-3)
                 )
@@ -135,9 +137,11 @@ class MINLPModel:
 
     def add_point_to_model(self, point):
         # point to be classified lies in pattern
-        # x[i] <= point[i] <= x[i + d], for all i
+        point = point.squeeze()
+        assert point.shape == (2,)
         self.model.point_constraint = pyo.ConstraintList()
         for i in self.drange:
+            # x[i] <= point[i] <= x[i + d], for all i
             self.model.point_constraint.add(self.model.pattern[0, i] <= point[i])
             self.model.point_constraint.add(point[i] <= self.model.pattern[1, i])
 
@@ -145,14 +149,12 @@ class MINLPModel:
         included_points = []
         for i in self.model.included:
             if np.round(self.model.included[i].value, 1) == 1.0:
-                # print("included point index: ",i, self.training_set[i])
                 included_points.append(self.training_set[i])
         return np.array(included_points)
 
     def extract_pattern(self):
         intervals = np.zeros((2, 2), dtype=float)
         for _, j in enumerate(self.model.pattern):
-            # print("pattern coordinate value: ", j, self.model.pattern[j].value)
             intervals[j] = self.model.pattern[j].value
         return intervals.T
 
@@ -161,6 +163,10 @@ class MINLPModel:
             point_to_be_classified
         )  # point to be classified is a 1 x d array
         _ = pyo.SolverFactory("mindtpy").solve(
-            self.model, strategy="OA", mip_solver="glpk", nlp_solver="ipopt", tee=True,
+            self.model,
+            strategy="OA",
+            mip_solver="glpk",
+            nlp_solver="ipopt",
+            tee=True,
         )
         return pyo.value(self.model.obj)
