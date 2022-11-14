@@ -1,7 +1,7 @@
 from rare_pattern_detect.patterns import PatternSpaceType
 from rare_pattern_detect.minlp_based import minlp_has_rare_pattern
 
-
+import unittest
 class RarePatternDetect:
     def __init__(self, delta, tau, epsilon, pattern_space):
         self.training_data = None
@@ -22,3 +22,6 @@ class RarePatternDetect:
         return self.has_rare_pattern(
             x, self.training_data, self.pattern_space, self.tau + self.epsilon / 2
         )
+
+if __name__ == "__main__":
+    unittest.main()
