@@ -50,6 +50,7 @@ class TestMINLPHasRarePattern(unittest.TestCase):
         x = np.array([1.0, 1.0])
         min_areas = range(0, 4)
         results = []
+        expected_results = [True, True, True]
         min_areas = [0.0]
         mus = [
             0.0,
@@ -76,7 +77,7 @@ class TestMINLPHasRarePattern(unittest.TestCase):
         print("test_zero_min_area_makes_everything_an_anomaly -> results: ", results)
         np.testing.assert_array_equal(
             np.asarray(results)[:, 2],
-            [True, True, True],
+            expected_results,
             [
                 "When min area=0 of the calculated pattern then \
             f_hat always satisfies the inequality (f(h|x,D) < mu). \
@@ -97,10 +98,7 @@ class TestMINLPHasRarePattern(unittest.TestCase):
             # However, using the RarePatternDetect (pac-rpad) we expect the algorithm to fail given that mu is zero
         """
         training_set = multivariate_normal.rvs(size=(20, 2))[:10]
-        #print("training_set:", training_set)
-        point_to_be_classified = training_set[-1]  # np.array([[2.0, 2.0]])
-        #print("point_to_be_classified: ", point_to_be_classified)
-        # y = np.array([[0, 2.0]])
+        point_to_be_classified = training_set[-1]
         results = []
         min_areas, mus = [0.1, 0.2, 1.0], [0.0]
         expected_results = [False, False, False]
@@ -123,7 +121,7 @@ class TestMINLPHasRarePattern(unittest.TestCase):
         print("test_zero_mu_and_min_area_bigger_than_0 -> results: ", results)
         np.testing.assert_array_equal(
             np.asarray(results)[:, 2],
-            [False, False, False],  # expected_results,
+            expected_results,
             [
                 "When mu = 0, min_area > 0 \
             then f_hat always dissatisfies the inequality (f(h|x,D) < mu). \
@@ -135,12 +133,9 @@ class TestMINLPHasRarePattern(unittest.TestCase):
         training_set =  np.array(
             [[0.0, 0.0], [2.0, 0.0], [0.0, 2.0], [2.0, 2.0]]
         )
-        #print("training_set:", training_set)
-        point_to_be_classified = np.array([1.0,1.0])  # np.array([[2.0, 2.0]])
-        #print("point_to_be_classified: ", point_to_be_classified)
+        point_to_be_classified = np.array([1.0,1.0])
         min_area = 0.1
         mu = 0.1
-        expected_results = [False]
         pattern_space = PatternSpace(
             PatternSpaceType.AXIS_ALIGNED_HYPER_RECTANGLES, cutoff=min_area
         )
@@ -156,7 +151,7 @@ class TestMINLPHasRarePattern(unittest.TestCase):
             ),
         )
         print("test_MINLP_classify -> result: ", np.asarray(result)[2])
-        assert result is not None
+        assert result[2] is not None
         assert result[2] is True or False
         # assert result is False, "When mu > 0, min_area > 0 and the point to be classfied lies in the pattern \
         #     then f_hat always dissatisfies the inequality (f(h|x,D) < mu). \
@@ -164,7 +159,8 @@ class TestMINLPHasRarePattern(unittest.TestCase):
   
 
     # TODO: FIX CODE FIRST
-    # def test_MINLP_model_creation_adjust_largest_pattern_bounds(self):
+    def test_MINLP_model_creation_adjust_largest_pattern_bounds(self):
+        pass
         # training_set = [[1.0,1.0],[0.0,1.0],[1.0,0.0],[0.0,0.0]]
         # print("training_set:", training_set)
         # point_to_be_classified = np.array([[0.5, 0.5]])
@@ -207,11 +203,6 @@ class TestMINLPHasRarePattern(unittest.TestCase):
     def test_MINLP_extract_points_included_in_pattern(self):
         pass
 
-    #     self.rare_pattern_detect = RarePatternDetect(self.training_set, min_area=self.min_area)
-    #     result = None
-    #     result = self.rare_pattern_detect.classify(self.point_to_be_classified)
-    #     print("result: ", result)
-    #     assert result is not None
 
 if __name__ == "__main__":
     unittest.main()

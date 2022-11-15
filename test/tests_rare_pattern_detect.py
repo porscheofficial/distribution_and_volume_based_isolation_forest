@@ -29,5 +29,5 @@ class TestRarePatternDetect(unittest.TestCase):
         rare_pattern_detect.load_training_data(training_set)
         assert rare_pattern_detect.training_data is training_set
 
-    # def test_RarePatternDetect_is_anomalous(self):
-    #     pass
+    def test_RarePatternDetect_is_anomalous(self):
+        pass
