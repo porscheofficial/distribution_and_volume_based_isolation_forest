@@ -2,15 +2,38 @@ import pyomo.environ as pyo
 import numpy as np
 from rare_pattern_detect.patterns import PatternSpace
 
+def contains(point: np.ndarray, largest_bounding_area) -> bool:
+    return all((largest_bounding_area[0,:] <= point.T) & (point.T <= largest_bounding_area[1,:]))
 
 def minlp_has_rare_pattern(
-    x, training_data, pattern_space: PatternSpace, mu, debugging_minlp_model
+    x, training_data, pattern_space: PatternSpace, mu, debugging_minlp_model=False
 ):
     min_area = pattern_space.cutoff  # @TODO: Replace with dynamic area calculation
-    m = MINLPModel(training_data, min_area)
-    s = m.classify(x, debugging_minlp_model)  # TODO: Parse solution output
-    return s <= mu
+    model = MINLPModel(training_data, min_area)
 
+    # Checking if point is included in the largest bounding area defined by the training set
+    if contains(x, model.largest_bounding_area):
+        solution = model.classify(x, debugging_minlp_model)
+
+        # Parse solution output
+        if solution is not None: 
+            # If the minlp model was feasible and a solution was found 
+            # then we return the model and the label that contains 
+            # if the point is anomalous or not (bool)
+            res = (model, solution <= mu)
+        else:
+            # If for some reasons the model encountered an error 
+            # while trying to solve the minlp model
+            print("Error when classifying a point: ", x, model.largest_bounding_area)
+            res = (None, None)
+    else:
+        print("point to be classified outside of the limits: anomaly")
+        # no need to solve the minlp model for this point.
+        # Since the point lies outside of the largest point area, then it must be an anomaly (True)
+        res = (None, True)
+
+    return res
+        
 
 class MINLPModel:
     def __init__(self, training_set: np.array, min_area: float):
@@ -25,6 +48,7 @@ class MINLPModel:
             ]
         )
         self.model = self.create_model()
+        self.minimized_f_hats = np.zeros(self.N, float)
 
     def create_model(self):
         def _pattern_area():
@@ -36,43 +60,12 @@ class MINLPModel:
         ## variables
 
         # x is a 2d vector
-        
-        model.d_dimension = pyo.Set(initialize=self.drange)
-        model.matrix = pyo.Set(initialize=model.d_dimension * model.d_dimension)
-        def adjust_largest_pattern_bounds(model, i, j): 
-            min_b = np.min(self.training_set[:,i])
-            max_b = np.max(self.training_set[:,i])
-            return min_b, max_b
-
-        model.pattern = pyo.Var(model.matrix , bounds=adjust_largest_pattern_bounds)
-
-        # model.matrix = pyo.Set(initialize=model.d_dimension * range(2))
-
-
-        # # TODO: simplify with np.apply_along_axis
-        # def _adjust_largest_pattern_bounds(model, i, j):
-        #     # print("i,j: ",i,j)
-        #     if (i, j) == (0, 0):
-        #         min_b = np.min(self.training_set[:, i])
-        #         max_b = np.max(self.training_set[:, i])
-        #     elif (i, j) == (0, 1):
-        #         min_b = np.min(self.training_set[:, i])
-        #         max_b = np.max(self.training_set[:, i])
-        #     elif (i, j) == (1, 0):
-        #         min_b = np.min(self.training_set[:, j])
-        #         max_b = np.max(self.training_set[:, j])
-        #     else:  # (1,1)
-        #         min_b = np.min(self.training_set[:, j])
-        #         max_b = np.max(self.training_set[:, j])
-        #     return (min_b, max_b)
-
-        # model.pattern = pyo.Var(model.matrix, bounds=_adjust_largest_pattern_bounds)
+        model.pattern = pyo.Var(self.drange , self.drange) #  , bounds=adjust_largest_pattern_bounds)
 
         # y is a boolean vector of size N
         model.included = pyo.Var(self.Nrange, within=pyo.Binary, initialize=0)
 
         # auxiliary variables
-        # print("self.drange", self.drange)
         model.interval_lengths = pyo.Var(self.drange, within=pyo.NonNegativeReals)
         model.point_left_of_pattern = pyo.Var(
             self.Nrange, self.drange, within=pyo.Binary, initialize=0
@@ -137,23 +130,25 @@ class MINLPModel:
                 >= 1
             )
 
-        # connect auxiliary variables: interval lengths are differences of pattern points
+        # connect auxiliary variables: interval lengths are differences of pattern points 
+        # and set bounds of the pattern to be optmized
         model.interval_constraint = pyo.ConstraintList()
-        # print("self.drange: ", self.drange)
+        model.pattern_constraint = pyo.ConstraintList()
         for i in self.drange:
-            # print("model.pattern: ", i, model.pattern[1, i], model.pattern[0, i])
+            model.pattern_constraint.add(
+                model.pattern[0,i] >= np.min(self.training_set[:,i])
+            )
+            model.pattern_constraint.add(
+                model.pattern[1,i]  <= np.max(self.training_set[:,i])
+            )
             model.interval_constraint.add(
                 model.interval_lengths[i] == model.pattern[1, i] - model.pattern[0, i]
             )
-
+        
         return model
 
-    def extract_points_included_in_pattern(self):
-        included_points = []
-        for i in self.model.included:
-            if np.round(self.model.included[i].value, 1) == 1.0:
-                included_points.append(self.training_set[i])
-        return np.array(included_points)
+    def extract_points_included_in_pattern(self):  
+        return np.array([self.training_set[i] for i in self.model.included if np.round(self.model.included[i].value, 1) == 1.0])
 
     def extract_pattern(self):
         intervals = np.zeros((2, 2), dtype=float)
@@ -162,6 +157,9 @@ class MINLPModel:
         return intervals.T
 
     def classify(self, point_to_be_classified: np.array, tee):
+        """
+        This function evaluates one testing point and returns the calculated objective (f_hat)
+        """
         # point to be classified is a 1 x d array
         self.add_point_to_model(point_to_be_classified)
         _ = pyo.SolverFactory("mindtpy").solve(
@@ -171,7 +169,15 @@ class MINLPModel:
             nlp_solver="ipopt",
             tee=tee,
         )
-        return pyo.value(self.model.obj)
+        try:
+            res = pyo.value(self.model.obj)
+        except: 
+            print("-classify- Something went wrong with the solver: ", point_to_be_classified)
+            res = None 
+        finally:
+            self.minimized_f_hats = np.round(res,2) if res is not None else None
+            return res
+         
 
     def add_point_to_model(self, point):
         # point to be classified lies in pattern
@@ -180,5 +186,10 @@ class MINLPModel:
         self.model.point_constraint = pyo.ConstraintList()
         for i in self.drange:
             # x[i] <= point[i] <= x[i + d], for all i
-            self.model.point_constraint.add(self.model.pattern[0, i] <= point[i])
-            self.model.point_constraint.add(point[i] <= self.model.pattern[1, i])
+            self.model.point_constraint.add(
+                self.model.pattern[0, i] <= point[i]
+            )
+            self.model.point_constraint.add(
+                point[i] <= self.model.pattern[1, i]
+            )
+
