@@ -2,8 +2,13 @@ import pyomo.environ as pyo
 import numpy as np
 from rare_pattern_detect.patterns import PatternSpace
 
+
 def contains(point: np.ndarray, largest_bounding_area) -> bool:
-    return all((largest_bounding_area[0,:] <= point.T) & (point.T <= largest_bounding_area[1,:]))
+    return all(
+        (largest_bounding_area[0, :] <= point.T)
+        & (point.T <= largest_bounding_area[1, :])
+    )
+
 
 def minlp_has_rare_pattern(
     x, training_data, pattern_space: PatternSpace, mu, debugging_minlp_model=False
@@ -16,13 +21,13 @@ def minlp_has_rare_pattern(
         solution = model.classify(x, debugging_minlp_model)
 
         # Parse solution output
-        if solution is not None: 
-            # If the minlp model was feasible and a solution was found 
-            # then we return the model and the label that contains 
+        if solution is not None:
+            # If the minlp model was feasible and a solution was found
+            # then we return the model and the label that contains
             # if the point is anomalous or not (bool)
             res = (model, solution <= mu)
         else:
-            # If for some reasons the model encountered an error 
+            # If for some reasons the model encountered an error
             # while trying to solve the minlp model
             print("Error when classifying a point: ", x, model.largest_bounding_area)
             res = (None, None)
@@ -33,7 +38,7 @@ def minlp_has_rare_pattern(
         res = (None, True)
 
     return res
-        
+
 
 class MINLPModel:
     def __init__(self, training_set: np.array, min_area: float):
@@ -60,7 +65,9 @@ class MINLPModel:
         ## variables
 
         # x is a 2d vector
-        model.pattern = pyo.Var(self.drange , self.drange) #  , bounds=adjust_largest_pattern_bounds)
+        model.pattern = pyo.Var(
+            self.drange, self.drange
+        )  #  , bounds=adjust_largest_pattern_bounds)
 
         # y is a boolean vector of size N
         model.included = pyo.Var(self.Nrange, within=pyo.Binary, initialize=0)
@@ -130,25 +137,31 @@ class MINLPModel:
                 >= 1
             )
 
-        # connect auxiliary variables: interval lengths are differences of pattern points 
+        # connect auxiliary variables: interval lengths are differences of pattern points
         # and set bounds of the pattern to be optmized
         model.interval_constraint = pyo.ConstraintList()
         model.pattern_constraint = pyo.ConstraintList()
         for i in self.drange:
             model.pattern_constraint.add(
-                model.pattern[0,i] >= np.min(self.training_set[:,i])
+                model.pattern[0, i] >= np.min(self.training_set[:, i])
             )
             model.pattern_constraint.add(
-                model.pattern[1,i]  <= np.max(self.training_set[:,i])
+                model.pattern[1, i] <= np.max(self.training_set[:, i])
             )
             model.interval_constraint.add(
                 model.interval_lengths[i] == model.pattern[1, i] - model.pattern[0, i]
             )
-        
+
         return model
 
-    def extract_points_included_in_pattern(self):  
-        return np.array([self.training_set[i] for i in self.model.included if np.round(self.model.included[i].value, 1) == 1.0])
+    def extract_points_included_in_pattern(self):
+        return np.array(
+            [
+                self.training_set[i]
+                for i in self.model.included
+                if np.round(self.model.included[i].value, 1) == 1.0
+            ]
+        )
 
     def extract_pattern(self):
         intervals = np.zeros((2, 2), dtype=float)
@@ -171,13 +184,15 @@ class MINLPModel:
         )
         try:
             res = pyo.value(self.model.obj)
-        except: 
-            print("-classify- Something went wrong with the solver: ", point_to_be_classified)
-            res = None 
+        except:
+            print(
+                "-classify- Something went wrong with the solver: ",
+                point_to_be_classified,
+            )
+            res = None
         finally:
-            self.minimized_f_hats = np.round(res,2) if res is not None else None
+            self.minimized_f_hats = np.round(res, 2) if res is not None else None
             return res
-         
 
     def add_point_to_model(self, point):
         # point to be classified lies in pattern
@@ -186,10 +201,5 @@ class MINLPModel:
         self.model.point_constraint = pyo.ConstraintList()
         for i in self.drange:
             # x[i] <= point[i] <= x[i + d], for all i
-            self.model.point_constraint.add(
-                self.model.pattern[0, i] <= point[i]
-            )
-            self.model.point_constraint.add(
-                point[i] <= self.model.pattern[1, i]
-            )
-
+            self.model.point_constraint.add(self.model.pattern[0, i] <= point[i])
+            self.model.point_constraint.add(point[i] <= self.model.pattern[1, i])
