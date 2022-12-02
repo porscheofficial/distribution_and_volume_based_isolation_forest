@@ -24,8 +24,15 @@ class RarePatternDetect:
         )
 
 
-def is_anomalous(self, x):
-    _, pred = self.has_rare_pattern(
-        x, self.training_data, self.pattern_space, self.tau + self.epsilon / 2
-    )
-    return pred
+    def is_anomalous(self, x):
+        _, pred = self.has_rare_pattern(
+            x, self.training_data, self.pattern_space, self.tau + self.epsilon / 2
+        )
+        return pred
+
+    def fit(self, X, y):
+        return self.load_training_data(X)
+
+    def predict_score(self, X_test):
+        return
+
