@@ -13,9 +13,9 @@ def contains(point: np.ndarray, largest_bounding_area) -> bool:
 def minlp_has_rare_pattern(
     x, training_data, pattern_space: PatternSpace, mu, debugging_minlp_model=False
 ):
-    '''
+    """
     This function returns the model and the label
-    '''
+    """
     min_area = pattern_space.cutoff  # @TODO: Replace with dynamic area calculation
     model = MINLPModel(training_data, min_area)
 
