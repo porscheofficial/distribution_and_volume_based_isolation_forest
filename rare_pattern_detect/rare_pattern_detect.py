@@ -12,14 +12,13 @@ class RarePatternDetect:
 
         if pattern_space.type == PatternSpaceType.AXIS_ALIGNED_HYPER_RECTANGLES:
             self.has_rare_pattern = minlp_has_rare_pattern
-
         else:
             self.has_rare_pattern = None
 
     def load_training_data(self, training_data):
         self.training_data = training_data
         N, d = training_data.shape
-        self.pattern_space.calculate_coeff(
+        self.pattern_space.cutoff = self.pattern_space.calculate_coeff(
             epsilon=self.epsilon, delta=self.delta, N=N, d=d
         )
 
@@ -30,9 +29,11 @@ class RarePatternDetect:
         )
         return pred
 
-    def fit(self, X, y):
-        return self.load_training_data(X)
+    ## Added for ADBench
+    def fit(self, X_train):
+        return self.load_training_data(X_train)
 
+    ## Added for ADBench
     def predict_score(self, X_test):
-        return
+        return self.is_anomalous(X_test)
 

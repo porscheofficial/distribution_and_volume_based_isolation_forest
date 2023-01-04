@@ -28,23 +28,24 @@ def minlp_has_rare_pattern(
             # If the minlp model was feasible and a solution was found
             # then we return the model and the label that contains
             # if the point is anomalous or not (bool)
-            res = (model, solution <= mu)
+            ret = (model, solution <= mu)
         else:
             # If for some reasons the model encountered an error
             # while trying to solve the minlp model
             print("Error when classifying a point: ", x, model.largest_bounding_area)
-            res = (None, None)
+            ret = (None, None)
     else:
         print("point to be classified outside of the limits: anomaly")
         # no need to solve the minlp model for this point.
         # Since the point lies outside of the largest point area, then it must be an anomaly (True)
-        res = (None, True)
+        ret = (None, True)
 
-    return res
+    return ret
 
 
 class MINLPModel:
     def __init__(self, training_set: np.array, min_area: float):
+        #assert min_area != 0.0, "min_area is zero !! This should never happen -> f_hat is zero -> everything anomaleous"
         self.training_set = training_set  # a N x d matrix
         self.min_area = min_area  # the smallest allowed area
         self.N, self.d = self.training_set.shape

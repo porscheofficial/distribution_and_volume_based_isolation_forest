@@ -19,5 +19,5 @@ class PatternSpace:
             N = kwargs["N"]
             d = kwargs["d"]
             v = 2 * d
-            min_area = 1 / N * math.log(d)  # TODO: FIll in details
+            min_area = math.sqrt((1 / N) * (256 / epsilon**2) * ( v * math.log(256 / epsilon**2) + math.log(8 / delta))) # TODO: FIll in details
             self.cutoff = min_area
