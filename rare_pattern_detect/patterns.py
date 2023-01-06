@@ -3,7 +3,7 @@ import math
 
 # from rare_pattern_detect.minlp_based import MIN_AREA
 
-MIN_AREA = 0.1  # 0.00001 # 3.9 # 0.1
+MIN_AREA = 1  # 0.00001 # 3.9 # 0.1
 
 
 class PatternSpaceType(Enum):
