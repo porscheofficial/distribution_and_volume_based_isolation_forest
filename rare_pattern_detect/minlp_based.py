@@ -126,7 +126,7 @@ class MINLPModel:
                 )
                 # if point is not strictly left of pattern, indicator needs to be set to False
                 pyomo_model.enforce_point_left_of_pattern.add(
-                    self.training_set[j, i]
+                    self.training_set[j, i] + 1e-3
                     <= (
                         pyomo_model.pattern[0, i]
                         + (1 - pyomo_model.point_left_of_pattern[j, i]) * M
@@ -146,7 +146,7 @@ class MINLPModel:
                         (1 - pyomo_model.point_right_of_pattern[j, i]) * M
                         + self.training_set[j, i]
                     )
-                    >= (pyomo_model.pattern[1, i])
+                    >= (pyomo_model.pattern[1, i]) - 1e-3
                 )
 
             pyomo_model.include_constraint.add(
@@ -168,10 +168,10 @@ class MINLPModel:
         pyomo_model.pattern_constraint = pyo.ConstraintList()
         for i in self.drange:
             pyomo_model.pattern_constraint.add(
-                pyomo_model.pattern[0, i] >= np.min(self.training_set[:, i]) - 1e-3
+                pyomo_model.pattern[0, i] >= np.min(self.training_set[:, i]) - 1e-2
             )
             pyomo_model.pattern_constraint.add(
-                pyomo_model.pattern[1, i] <= np.max(self.training_set[:, i]) + 1e-3
+                pyomo_model.pattern[1, i] <= np.max(self.training_set[:, i]) + 1e-2
             )
             pyomo_model.interval_constraint.add(
                 pyomo_model.interval_lengths[i]
@@ -200,8 +200,8 @@ class MINLPModel:
         for i in self.drange:
             result[i] = np.array(
                 [
-                    np.min(self.training_set[:, i]) - 1e-3,
-                    np.max(self.training_set[:, i] + 1e-3),
+                    np.min(self.training_set[:, i]) - 1e-2,
+                    np.max(self.training_set[:, i] + 1e-2),
                 ]
             )
         return result  # np.concatenate(self.largest_bounding_area, tmp)
