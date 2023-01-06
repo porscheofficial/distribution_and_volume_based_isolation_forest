@@ -94,7 +94,7 @@ class PacRpad:
     def calculate_U_h_forest(self, volumes_pattern_space_forest):
         """
         x : datapoint
-        h : trained set 
+        h : trained set
         |D| : size of training set?
         U_h : The area of the rectangle (pattern) in the pattern space
         """

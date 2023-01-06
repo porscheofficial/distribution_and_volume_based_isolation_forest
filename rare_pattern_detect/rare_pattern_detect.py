@@ -2,6 +2,8 @@ from rare_pattern_detect.patterns import PatternSpaceType, PatternSpace
 from rare_pattern_detect.minlp_based import minlp_has_rare_pattern
 
 import unittest
+
+
 class RarePatternDetect:
     def __init__(self, delta, tau, epsilon, pattern_space: PatternSpace):
         self.training_data = None
@@ -19,18 +21,12 @@ class RarePatternDetect:
         self.training_data = training_data
         N, d = training_data.shape
         self.pattern_space.cutoff = self.pattern_space.calculate_coeff(
-            epsilon=self.epsilon, 
-            delta=self.delta, 
-            N=N, 
-            d=d
+            epsilon=self.epsilon, delta=self.delta, N=N, d=d
         )
 
     def is_anomalous(self, x):
         _, pred = self.has_rare_pattern(
-            x, 
-            self.training_data, 
-            self.pattern_space, 
-            self.tau + self.epsilon / 2
+            x, self.training_data, self.pattern_space, self.tau + self.epsilon / 2
         )
         return pred
 
