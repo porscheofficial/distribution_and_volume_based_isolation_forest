@@ -1,11 +1,15 @@
 from enum import Enum
 import math
+
 # from rare_pattern_detect.minlp_based import MIN_AREA
 
-MIN_AREA = 0.1 # 0.00001 # 3.9 # 0.1
+MIN_AREA = 0.1  # 0.00001 # 3.9 # 0.1
+
+
 class PatternSpaceType(Enum):
     AXIS_ALIGNED_HYPER_RECTANGLES = 1
     HALF_SPACES = 2
+
 
 class PatternSpace:
     def __init__(self, type: PatternSpaceType, cutoff):
@@ -19,8 +23,8 @@ class PatternSpace:
             N = kwargs["N"]
             d = kwargs["d"]
             v = 2 * d
-            # TODO: min area can be solved with wolfram alpha and then plugged in here 
-            # OR using simpy to solve the equation directly in python 
+            # TODO: min area can be solved with wolfram alpha and then plugged in here
+            # OR using simpy to solve the equation directly in python
             # min_area = math.sqrt((1 / N) * (256 / epsilon**2) * ( v * math.log(256 / epsilon**2) + math.log(8 / delta)))
             # print("calculating cutoff dynamic min_area : ", MIN_AREA)
-            self.cutoff = 0.1 # MIN_AREA
+            self.cutoff = 0.1  # MIN_AREA
