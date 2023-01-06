@@ -35,7 +35,7 @@ class TestMINLPHasRarePattern(unittest.TestCase):
 
     # def test_MINLP_model_creation(self):
     #     '''
-    #     This model makes sure that the following cari
+    #     This pyomo_model makes sure that the following cari
     #     '''
     #     training_set = multivariate_normal.rvs(size=(10, 2))
     #     pattern_space = PatternSpace(
@@ -43,11 +43,11 @@ class TestMINLPHasRarePattern(unittest.TestCase):
     #     )
     #     solver = MINLPModel(training_set, min_area=pattern_space.cutoff)
     #     # use unittest.asserterror
-    #     assert solver.model is not None, "Minlp model is none after model creation"
-    #     assert solver.model.pattern is not None
-    #     assert solver.model.included is not None
-    #     assert solver.model.obj is not None
-    #     assert solver.model.interval_lengths is not None
+    #     assert solver.pyomo_model is not None, "Minlp pyomo_model is none after pyomo_model creation"
+    #     assert solver.pyomo_model.pattern is not None
+    #     assert solver.pyomo_model.included is not None
+    #     assert solver.pyomo_model.obj is not None
+    #     assert solver.pyomo_model.interval_lengths is not None
 
     # @TODO: fix this
     # def test_zero_min_area_makes_everything_an_anomaly(self):
@@ -181,14 +181,14 @@ class TestMINLPHasRarePattern(unittest.TestCase):
     #     pattern_space = PatternSpace(
     #         PatternSpaceType.AXIS_ALIGNED_HYPER_RECTANGLES, cutoff=min_area
     #     )
-    #     model, label= minlp_has_rare_pattern(
+    #     pyomo_model, label= minlp_has_rare_pattern(
     #             point_to_be_classified,
     #             training_set,
     #             pattern_space,
     #             mu,
     #             debugging_minlp_model=False,
     #     )
-    #     assert model is not None
+    #     assert pyomo_model is not None
     #     assert label is not None
     #     assert label is True
 
@@ -229,7 +229,7 @@ class TestMINLPHasRarePattern(unittest.TestCase):
     #     pattern_space = PatternSpace(
     #         PatternSpaceType.AXIS_ALIGNED_HYPER_RECTANGLES, cutoff=min_area
     #     )
-    #     model, label = minlp_has_rare_pattern(
+    #     pyomo_model, label = minlp_has_rare_pattern(
     #             point_to_be_classified,
     #             training_set,
     #             pattern_space,

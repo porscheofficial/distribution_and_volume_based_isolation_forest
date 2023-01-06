@@ -110,7 +110,7 @@ def main():
     sim = PacRpad(epsilon=0.1, delta=0.1, mu=0.1)
 
     # dataset =  custom_dataset_generation(mean=15,std=1,generated_samples=10000)
-    # model, dataset_post_detection = train_IF(dataset, n_estimators=2)
+    # pyomo_model, dataset_post_detection = train_IF(dataset, n_estimators=2)
     # anomaly_detection_results_visualisation(dataset_post_detection)
 
 
