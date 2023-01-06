@@ -69,7 +69,7 @@ class MINLPModel:
 
         # x is a 2d vector
         model.pattern = pyo.Var(
-            self.drange, self.drange
+            range(2), self.drange
         )  #  , bounds=adjust_largest_pattern_bounds)
 
         # y is a boolean vector of size N
@@ -95,8 +95,9 @@ class MINLPModel:
         # pattern area needs to exceed min_area
         model.area_constraint = pyo.Constraint(expr=_pattern_area() >= self.min_area)
 
-        # training points included in model.included lie within the pattern (NB: In principle we would need to ensure that points not included are also
-        # not included in model.included. However, since including points outside the pattern increases the objective, this is covered.)
+        # training points included in model.included lie within the pattern (NB: In principle we would need to ensure
+        # that points not included are also not included in model.included. However, since including points outside
+        # the pattern increases the objective, this is covered.)
 
         model.include_constraint = pyo.ConstraintList()
         model.enforce_point_left_of_pattern = pyo.ConstraintList()
