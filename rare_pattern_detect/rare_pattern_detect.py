@@ -26,7 +26,10 @@ class RarePatternDetect:
 
     def is_anomalous(self, x):
         _, pred = self.has_rare_pattern(
-            x, self.training_data, self.pattern_space, self.tau + self.epsilon / 2
+            x,
+            training_data=self.training_data,
+            pattern_space=self.pattern_space,
+            mu=self.tau + self.epsilon / 2,
         )
         return pred
 

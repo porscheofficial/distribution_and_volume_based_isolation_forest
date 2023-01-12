@@ -4,15 +4,19 @@ from rare_pattern_detect.patterns import PatternSpace, MIN_AREA
 
 
 def minlp_has_rare_pattern(
-    x, training_data, pattern_space: PatternSpace, mu, debugging_minlp_model=False
+    point_to_be_classified,
+    training_data,
+    pattern_space: PatternSpace,
+    mu,
+    debugging_minlp_model=False,
 ):
     min_area = MIN_AREA  # pattern_space.cutoff
     model = MINLPModel(training_data, min_area)
 
     # Checking if point is included in the largest bounding area defined by the training set
-    if contains(x, model.largest_bounding_area):
-        solution = model.classify(x, tee=debugging_minlp_model)
-
+    if contains(point_to_be_classified, model.largest_bounding_area):
+        solution = model.classify(point_to_be_classified, tee=debugging_minlp_model)
+        print(f"evaluating: {point_to_be_classified} -> f_hat:{solution} <?> mu:{mu}")
         # Parse solution output
         if solution is not None:
             # If the minlp pyomo_model was feasible and a solution was found
@@ -20,16 +24,23 @@ def minlp_has_rare_pattern(
             # if the point is anomalous or not (bool)
             res = (model, solution <= mu)
         else:
-            # If for some reasons the pyomo_model encountered an error
-            # while trying to solve the minlp pyomo_model
-            print("Error when classifying a point: ", x, model.largest_bounding_area)
+            # Else if for some reasons the pyomo_model encountered an error
+            # while trying to solve the minlp pyomo_model we return (None, None)
+            print(
+                "Error when classifying a point: ",
+                point_to_be_classified,
+                # model.largest_bounding_area,
+            )
             res = (None, None)
     else:
         print("point to be classified outside of the limits: anomaly")
         # no need to solve the minlp pyomo_model for this point.
         # Since the point lies outside of the largest point area, then it must be an anomaly (True)
+        # This should only happen in case we split the dataset to training and testing set.
+        # In the case of unsupervised learning, we consider the whole dataset as a training set
         res = (None, True)
 
+    # model.pyomo_model.included.pprint()
     return res
 
 
@@ -45,7 +56,7 @@ class MINLPModel:
     def __init__(self, training_set: np.array, min_area: float):
         # !! This should never happen -> f_hat is zero -> everything anomaleous"
         # -> A test was added to test for this case
-        # assert min_area != 0.0, "min_area is zero
+        assert min_area != 0.0, "min_area is zero"
         self.training_set = training_set  # a N x d matrix
         self.min_area = min_area  # the smallest allowed area
         self.N, self.d = self.training_set.shape
@@ -53,6 +64,7 @@ class MINLPModel:
         self.largest_bounding_area = self.calculate_largest_bounding_area()
         self.pyomo_model = self.create_pyomo_model()
         self.minimized_f_hats = np.zeros(self.N, float)
+        self.point_to_be_classified = None
 
     def create_pyomo_model(self):
         def _pattern_area():
@@ -66,11 +78,15 @@ class MINLPModel:
         # x is a 2d vectorl
 
         pyomo_model.pattern = pyo.Var(
-            range(2), self.drange, within=pyo.Reals  # self.drange , self.drange #
+            range(2),
+            self.drange,
+            within=pyo.Reals,
+            initialize=0,  # self.drange , self.drange #
         )  # , bounds=adjust_largest_pattern_bounds)
 
         # y is a boolean vector of size N
-        pyomo_model.included = pyo.Var(self.Nrange, within=pyo.Binary, initialize=1)
+
+        pyomo_model.included = pyo.Var(self.Nrange, within=pyo.Binary, initialize=0)
 
         # auxiliary variables
 
@@ -84,6 +100,7 @@ class MINLPModel:
             within=pyo.NonNegativeReals,
             initialize=bounding_area_func,
         )
+
         pyomo_model.point_left_of_pattern = pyo.Var(
             self.Nrange, self.drange, within=pyo.Binary, initialize=0
         )
@@ -177,7 +194,6 @@ class MINLPModel:
                 pyomo_model.interval_lengths[i]
                 == pyomo_model.pattern[1, i] - pyomo_model.pattern[0, i]
             )
-        # pyomo_model.interval_lengths.pprint()
         return pyomo_model
 
     def extract_points_included_in_pattern(self):
@@ -201,7 +217,7 @@ class MINLPModel:
             result[i] = np.array(
                 [
                     np.min(self.training_set[:, i]) - 1e-2,
-                    np.max(self.training_set[:, i] + 1e-2),
+                    np.max(self.training_set[:, i]) + 1e-2,
                 ]
             )
         return result  # np.concatenate(self.largest_bounding_area, tmp)
@@ -233,14 +249,20 @@ class MINLPModel:
 
     def add_point_to_model(self, point):
         # point to be classified lies in pattern
-        point = point.squeeze()
-        # assert point.shape == (2,)
+        self.point_to_be_classified = point.squeeze()
+
+        lst = self.training_set.tolist()
+        index = lst.index(self.point_to_be_classified.tolist())
+        # TODO: add constraint so that the included array has a 1
+        # in the index that corresponds to the point to be classified
+
         self.pyomo_model.point_constraint = pyo.ConstraintList()
+        self.pyomo_model.point_constraint.add(self.pyomo_model.included[index] == 1)
         for i in self.drange:
             # x[i] <= point[i] <= x[i + d], for all i
             self.pyomo_model.point_constraint.add(
-                self.pyomo_model.pattern[0, i] <= point[i]
+                self.pyomo_model.pattern[0, i] <= self.point_to_be_classified[i]
             )
             self.pyomo_model.point_constraint.add(
-                point[i] <= self.pyomo_model.pattern[1, i]
+                self.point_to_be_classified[i] <= self.pyomo_model.pattern[1, i]
             )

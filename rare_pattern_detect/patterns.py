@@ -15,6 +15,7 @@ class PatternSpace:
     def __init__(self, type: PatternSpaceType, cutoff):
         self.type = type
         self.cutoff = cutoff if cutoff != None else self.calculate_coeff()
+        print("cutoff (min_area): ", self.cutoff)
 
     def calculate_coeff(self, **kwargs):
         if self.type == PatternSpaceType.AXIS_ALIGNED_HYPER_RECTANGLES:
@@ -26,5 +27,4 @@ class PatternSpace:
             # TODO: min area can be solved with wolfram alpha and then plugged in here
             # OR using simpy to solve the equation directly in python
             # min_area = math.sqrt((1 / N) * (256 / epsilon**2) * ( v * math.log(256 / epsilon**2) + math.log(8 / delta)))
-            # print("calculating cutoff dynamic min_area : ", MIN_AREA)
             self.cutoff = 0.1  # MIN_AREA
