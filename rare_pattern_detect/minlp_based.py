@@ -250,12 +250,8 @@ class MINLPModel:
     def add_point_to_model(self, point):
         # point to be classified lies in pattern
         self.point_to_be_classified = point.squeeze()
-
         lst = self.training_set.tolist()
         index = lst.index(self.point_to_be_classified.tolist())
-        # TODO: add constraint so that the included array has a 1
-        # in the index that corresponds to the point to be classified
-
         self.pyomo_model.point_constraint = pyo.ConstraintList()
         self.pyomo_model.point_constraint.add(self.pyomo_model.included[index] == 1)
         for i in self.drange:
