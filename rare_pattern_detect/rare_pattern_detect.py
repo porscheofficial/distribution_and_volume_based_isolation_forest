@@ -25,13 +25,13 @@ class RarePatternDetect:
         )
 
     def is_anomalous(self, x):
-        _, pred = self.has_rare_pattern(
+        model, pred = self.has_rare_pattern(
             x,
             training_data=self.training_data,
             pattern_space=self.pattern_space,
             mu=self.tau + self.epsilon / 2,
         )
-        return pred
+        return model, pred
 
     ## Added for ADBench
     def fit(self, X):

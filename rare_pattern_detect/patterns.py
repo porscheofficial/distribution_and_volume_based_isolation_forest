@@ -1,6 +1,9 @@
 from enum import Enum
 import math
 
+from sympy.abc import x
+from sympy import solve_rational_inequalities, Poly
+
 # from rare_pattern_detect.minlp_based import MIN_AREA
 
 MIN_AREA = 1  # 0.00001 # 3.9 # 0.1

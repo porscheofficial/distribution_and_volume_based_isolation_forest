@@ -13,10 +13,13 @@ def minlp_has_rare_pattern(
     min_area = MIN_AREA  # pattern_space.cutoff
     model = MINLPModel(training_data, min_area)
 
+    lst = training_data.tolist()
+    index = lst.index(point_to_be_classified.tolist())
+
     # Checking if point is included in the largest bounding area defined by the training set
     if contains(point_to_be_classified, model.largest_bounding_area):
         solution = model.classify(point_to_be_classified, tee=debugging_minlp_model)
-        print(f"evaluating: {point_to_be_classified} -> f_hat:{solution} <?> mu:{mu}")
+        # print(f"evaluating: {point_to_be_classified} -> f_hat:{solution} <?> mu:{mu}")
         # Parse solution output
         if solution is not None:
             # If the minlp pyomo_model was feasible and a solution was found
@@ -31,14 +34,24 @@ def minlp_has_rare_pattern(
                 point_to_be_classified,
                 # model.largest_bounding_area,
             )
-            res = (None, None)
+            res = (model, None)
     else:
         print("point to be classified outside of the limits: anomaly")
         # no need to solve the minlp pyomo_model for this point.
         # Since the point lies outside of the largest point area, then it must be an anomaly (True)
         # This should only happen in case we split the dataset to training and testing set.
         # In the case of unsupervised learning, we consider the whole dataset as a training set
-        res = (None, True)
+        solution = 0.0
+        res = (model, True)
+
+    if model.minimized_f_hats[index] == 0.0:
+        # print(f"calculating f_hats for {point_to_be_classified}")
+        np.put(model.minimized_f_hats, index, solution, mode="raise")
+        # print("minimized f_hat array after put ", index, model.minimized_f_hats)
+    else:
+        raise Exception(
+            "Replacing already calculated f_hat value with new one. This should not happen"
+        )
 
     # model.pyomo_model.included.pprint()
     return res
@@ -244,7 +257,7 @@ class MINLPModel:
             )
             res = None
         finally:
-            self.minimized_f_hats = np.round(res, 2) if res is not None else None
+            # self.minimized_f_hats = np.round(res, 2) if res is not None else None
             return res
 
     def add_point_to_model(self, point):
