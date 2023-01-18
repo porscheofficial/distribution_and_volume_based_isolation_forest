@@ -20,9 +20,9 @@ class RarePatternDetect:
     def load_training_data(self, training_data):
         self.training_data = training_data
         N, d = training_data.shape
-        self.pattern_space.cutoff = self.pattern_space.calculate_coeff(
-            epsilon=self.epsilon, delta=self.delta, N=N, d=d
-        )
+        # self.pattern_space.cutoff = self.pattern_space.calculate_coeff(
+        #     epsilon=self.epsilon, delta=self.delta, N=N, d=d
+        # )
 
     def is_anomalous(self, x):
         model, pred = self.has_rare_pattern(

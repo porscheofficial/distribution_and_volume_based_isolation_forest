@@ -1,6 +1,6 @@
 import pyomo.environ as pyo
 import numpy as np
-from rare_pattern_detect.patterns import PatternSpace, MIN_AREA
+from rare_pattern_detect.patterns import PatternSpace  # , MIN_AREA
 
 
 def minlp_has_rare_pattern(
@@ -10,7 +10,11 @@ def minlp_has_rare_pattern(
     mu,
     debugging_minlp_model=False,
 ):
-    min_area = MIN_AREA  # pattern_space.cutoff
+    min_area = pattern_space.cutoff
+    # print(
+    #     "pattern_space.cutoff (minlp_has_rare_pattern in minlp_based): ",
+    #     pattern_space.cutoff,
+    # )
     model = MINLPModel(training_data, min_area)
 
     lst = training_data.tolist()
@@ -130,6 +134,7 @@ class MINLPModel:
         ## constraints
 
         # pattern area needs to exceed min_area
+        # print("used min area: ", self.min_area)
         pyomo_model.area_constraint = pyo.Constraint(
             expr=_pattern_area() >= self.min_area
         )
