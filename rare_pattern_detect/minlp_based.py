@@ -8,6 +8,7 @@ def minlp_has_rare_pattern(
     training_data,
     pattern_space: PatternSpace,
     mu,
+    testing_data=None,
     debugging_minlp_model=False,
 ):
     min_area = pattern_space.cutoff
@@ -15,10 +16,11 @@ def minlp_has_rare_pattern(
     #     "pattern_space.cutoff (minlp_has_rare_pattern in minlp_based): ",
     #     pattern_space.cutoff,
     # )
-    model = MINLPModel(training_data, min_area)
+    # print("(minlp_has_rare_pattern) testing_data: ", testing_data)
+    model = MINLPModel(training_data, testing_data, min_area)
 
-    lst = training_data.tolist()
-    index = lst.index(point_to_be_classified.tolist())
+    # lst = training_data.tolist()
+    # index = lst.index(point_to_be_classified.tolist())
 
     # Checking if point is included in the largest bounding area defined by the training set
     if contains(point_to_be_classified, model.largest_bounding_area):
@@ -48,14 +50,16 @@ def minlp_has_rare_pattern(
         solution = 0.0
         res = (model, True)
 
-    if model.minimized_f_hats[index] == 0.0:
-        # print(f"calculating f_hats for {point_to_be_classified}")
-        np.put(model.minimized_f_hats, index, solution, mode="raise")
-        # print("minimized f_hat array after put ", index, model.minimized_f_hats)
-    else:
-        raise Exception(
-            "Replacing already calculated f_hat value with new one. This should not happen"
-        )
+    # if model.minimized_f_hats[index] == 0.0:
+    # print(f"calculating f_hats for {point_to_be_classified}")
+    # np.put(model.minimized_f_hats, index, solution, mode="raise")
+    # print("minimized f_hat array before put ", model.minimized_f_hats)
+    model.minimized_f_hats = solution  # np.append(model.minimized_f_hats, solution)
+    # print("minimized f_hat array after appending ", model.minimized_f_hats)
+    # else:
+    #     raise Exception(
+    #         "Replacing already calculated f_hat value with new one. This should not happen"
+    #     )
 
     # model.pyomo_model.included.pprint()
     return res
@@ -70,17 +74,20 @@ def contains(point: np.ndarray, largest_bounding_area) -> bool:
 
 
 class MINLPModel:
-    def __init__(self, training_set: np.array, min_area: float):
+    def __init__(self, training_set: np.array, testing_set, min_area: float):
         # !! This should never happen -> f_hat is zero -> everything anomaleous"
         # -> A test was added to test for this case
         assert min_area != 0.0, "min_area is zero"
         self.training_set = training_set  # a N x d matrix
+        self.testing_set = testing_set
         self.min_area = min_area  # the smallest allowed area
         self.N, self.d = self.training_set.shape
         self.Nrange, self.drange = (range(x) for x in self.training_set.shape)
         self.largest_bounding_area = self.calculate_largest_bounding_area()
         self.pyomo_model = self.create_pyomo_model()
-        self.minimized_f_hats = np.zeros(self.N, float)
+        self.minimized_f_hats = np.array(
+            [], dtype=np.float64
+        )  # np.zeros(self.N, float)
         self.point_to_be_classified = None
 
     def create_pyomo_model(self):
@@ -268,7 +275,16 @@ class MINLPModel:
     def add_point_to_model(self, point):
         # point to be classified lies in pattern
         self.point_to_be_classified = point.squeeze()
-        lst = self.training_set.tolist()
+
+        try:
+            lst = self.training_set.tolist()
+        except:
+            print(
+                "failed extracting index from training set. doing a test/train split? if yes then no problem"
+            )
+        finally:
+            lst = self.testing_set.tolist()
+
         index = lst.index(self.point_to_be_classified.tolist())
         self.pyomo_model.point_constraint = pyo.ConstraintList()
         self.pyomo_model.point_constraint.add(self.pyomo_model.included[index] == 1)
