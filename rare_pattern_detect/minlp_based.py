@@ -2,6 +2,18 @@ import pyomo.environ as pyo
 import numpy as np
 from rare_pattern_detect.patterns import PatternSpace  # , min_volume
 
+DEFAULT_SOLVER_SETTINGS = {
+    "strategy": "OA",
+    "mip_solver": "glpk",
+    "nlp_solver": "ipopt",
+    # "use_mcpp": "False",
+    # "use_fbbt": "False",
+    # "threads": 0,
+    # "absolute_bound_tolerance": 0.1,
+    # "relative_bound_tolerance": 0.01,
+    "tee": False,
+}
+
 
 def minlp_has_rare_pattern(
     point_to_be_classified,
@@ -9,14 +21,18 @@ def minlp_has_rare_pattern(
     pattern_space: PatternSpace,
     mu,
     testing_data=None,
-    debugging_minlp_model=False,
+    solver_settings=None,
 ):
+    if solver_settings is None:
+        solver_settings = {}
     min_volume = pattern_space.cutoff
     model = MINLPModel(training_data, testing_data, min_volume)
 
     # Checking if point is included in the largest bounding area defined by the training set
     if contains(point_to_be_classified, model.largest_bounding_area):
-        solution = model.classify(point_to_be_classified, tee=debugging_minlp_model)
+        solution = model.find_min_f_hat(
+            point_to_be_classified, solver_settings=solver_settings
+        )
         # print(f"evaluating: {point_to_be_classified} -> f_hat:{solution} <?> mu:{mu}")
         # Parse solution output
         if solution is not None:
@@ -55,17 +71,17 @@ def contains(point: np.ndarray, largest_bounding_area) -> bool:
 
 
 class MINLPModel:
-    def __init__(self, training_set: np.array, testing_set, min_volume: float):
+    def __init__(self, training_set: np.array, min_volume: float, **kwargs):
         # !! This should never happen -> f_hat is zero -> everything anomaleous"
         # -> A test was added to test for this case
         assert min_volume != 0.0, "min_volume is zero"
+        self.kwargs = kwargs
         self.training_set = training_set  # a N x d matrix
-        self.testing_set = testing_set
+        # self.testing_set = testing_set
         self.min_volume = min_volume  # the smallest allowed area
         self.N, self.d = self.training_set.shape
         self.Nrange, self.drange = (range(x) for x in self.training_set.shape)
         self.largest_bounding_area = self.calculate_largest_bounding_area()
-        self.nth_root = self.min_volume ** (1 / self.d)
         self.pyomo_model = self.create_pyomo_model()
         self.minimized_f_hats = np.array([], dtype=np.float64)
         self.point_to_be_classified = None
@@ -80,22 +96,31 @@ class MINLPModel:
         # variables
 
         # x is a 2d vector
+
+        def whole_bounding_area(model, i, j):
+            return self.largest_bounding_area.T[i, j]
+
+        def pattern_bounds(model, i, j):
+            return tuple(self.largest_bounding_area.T[:, j])
+
         pyomo_model.pattern = pyo.Var(
             range(2),
             self.drange,
             within=pyo.Reals,
-            initialize=0,
+            bounds=pattern_bounds,
+            initialize=whole_bounding_area,
         )
 
         # y is a boolean vector of size N
-
         pyomo_model.included = pyo.Var(self.Nrange, within=pyo.Binary, initialize=0)
 
         # Constraint to bound the number of points included in the pattern
         # to at most 10% of the total number of training points
-        # pyomo_model.constraint_included_point_in_pattern = pyo.Constraint(
-        #     expr=sum(pyomo_model.included[i] for i in self.Nrange) <= (self.N / 20)
-        # )
+        if "bound_included" in self.kwargs:
+            bound_included = round(self.kwargs["bound_included"] * self.N)
+            pyomo_model.constraint_included_point_in_pattern = pyo.Constraint(
+                expr=sum(pyomo_model.included[i] for i in self.Nrange) <= bound_included
+            )
 
         # auxiliary variables
         def initializing_area_func(model, i):
@@ -220,6 +245,9 @@ class MINLPModel:
         return intervals.T
 
     def calculate_largest_bounding_area(self):
+        """
+        This returns the bounding area, with a small addition in both sides, and returns it in the shape (d,2):
+        """
         result = np.zeros((self.d, 2), dtype=float)
         for i in self.drange:
             result[i] = np.array(
@@ -230,12 +258,56 @@ class MINLPModel:
             )
         return result
 
-    def classify(self, point_to_be_classified: np.array, tee):
+    def find_min_f_hat(self, point_to_be_classified: np.array, solver_settings=None):
         """
         This function evaluates one testing point and returns the calculated objective (f_hat)
         """
+        if solver_settings is None:
+            solver_settings = {}
+
         # point to be classified is a 1 x d array
         self.add_point_to_model(point_to_be_classified)
+
+        # initialise the initial_pattern if given
+        if "initial_pattern" in self.kwargs:
+
+            if self.kwargs["initial_pattern"] == "maximal":
+                # auxiliary variables
+                def initializing_area_func(model, i):
+                    return float(
+                        self.largest_bounding_area[i, 1]
+                        - self.largest_bounding_area[i, 0]
+                    )
+
+                def whole_bounding_area(model, i, j):
+                    return self.largest_bounding_area.T[i, j]
+
+                self.pyomo_model.interval_lengths.initialize = initializing_area_func
+                self.pyomo_model.included.initialise = 1
+                self.pyomo_model.pattern.initialise = whole_bounding_area
+
+            elif self.kwargs["initial_pattern"] == "minimal":
+                nth_root = self.min_volume ** (1 / self.d)
+
+                def calc_min_side_lengths(model, i, j):
+                    return point_to_be_classified[j] - ((-1) ** i) * nth_root
+
+                self.pyomo_model.included.initialise = 0
+                self.pyomo_model.interval_lengths.initialize = nth_root
+                self.pyomo_model.pattern.initialise = calc_min_side_lengths
+
+        # Use the nth root of the min_volume over two in all nth dimensions to initialize the pattern
+        # self.pyomo_model.pattern[0, i] = self.point_to_be_classified[i] - (
+        #     self.nth_root / 2
+        # )
+        #
+        # self.pyomo_model.pattern[1, i] = self.point_to_be_classified[i] + (
+        #     self.nth_root / 2
+        # )
+
+        for k, v in DEFAULT_SOLVER_SETTINGS.items():
+            if k not in solver_settings:
+                solver_settings[k] = v
 
         # Old slow solver
         # _ = pyo.SolverFactory("mindtpy").solve(
@@ -246,19 +318,21 @@ class MINLPModel:
         #     tee=tee,
         # )
 
+        # # New faster solver
+        # _ = pyo.SolverFactory("mindtpy").solve(
+        #     self.pyomo_model,
+        #     strategy="OA",
+        #     mip_solver="gurobi_persistent",
+        #     nlp_solver="appsi_ipopt",
+        #     use_mcpp="True",
+        #     use_fbbt="True",
+        #     threads=4,
+        #     # absolute_bound_tolerance=0.1,
+        #     # relative_bound_tolerance=0.01,
+        #     tee=tee,
+        # )
         # New faster solver
-        _ = pyo.SolverFactory("mindtpy").solve(
-            self.pyomo_model,
-            strategy="OA",
-            mip_solver="gurobi_persistent",
-            nlp_solver="appsi_ipopt",
-            use_mcpp="True",
-            use_fbbt="True",
-            threads=4,
-            # absolute_bound_tolerance=0.1,
-            # relative_bound_tolerance=0.01,
-            tee=tee,
-        )
+        _ = pyo.SolverFactory("mindtpy").solve(self.pyomo_model, **solver_settings)
         try:
             res = pyo.value(self.pyomo_model.obj)
         except:
@@ -275,26 +349,17 @@ class MINLPModel:
         # point to be classified lies in pattern
         self.point_to_be_classified = point.squeeze()
 
-        if np.any(self.testing_set):
-            # print("extracting index from testing set")
-            lst = self.testing_set.tolist()
-        else:
-            lst = self.training_set.tolist()
-
-        index = lst.index(self.point_to_be_classified.tolist())
+        # if np.any(self.testing_set):
+        #     # print("extracting index from testing set")
+        #     lst = self.testing_set.tolist()
+        # else:
+        #     lst = self.training_set.tolist()
+        #
+        # index = lst.index(self.point_to_be_classified.tolist())
 
         self.pyomo_model.point_constraint = pyo.ConstraintList()
-        self.pyomo_model.point_constraint.add(self.pyomo_model.included[index] == 1)
+        # self.pyomo_model.point_constraint.add(self.pyomo_model.included[index] == 1)
         for i in self.drange:
-            # Use the nth root of the min_volume over two in all nth dimensions to initialize the pattern
-            self.pyomo_model.pattern[0, i] = self.point_to_be_classified[i] - (
-                self.nth_root / 2
-            )
-
-            self.pyomo_model.pattern[1, i] = self.point_to_be_classified[i] + (
-                self.nth_root / 2
-            )
-
             # x[i] <= point[i] <= x[i + d], for all i
             self.pyomo_model.point_constraint.add(
                 self.pyomo_model.pattern[0, i] <= self.point_to_be_classified[i]
