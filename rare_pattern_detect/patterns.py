@@ -1,8 +1,4 @@
 from enum import Enum
-import math
-
-from sympy.abc import x
-from sympy import solve_rational_inequalities, Poly
 
 
 class PatternSpaceType(Enum):
