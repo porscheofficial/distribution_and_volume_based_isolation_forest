@@ -52,8 +52,8 @@ def minlp_has_rare_pattern(
         print("point to be classified outside of the limits: anomaly")
         # no need to solve the minlp pyomo_model for this point.
         # Since the point lies outside of the largest point area, then it must be an anomaly (True)
-        # This should only happen in case we split the dataset to training and testing set.
-        # In the case of unsupervised learning, we consider the whole dataset as a training set
+        # This should only happen in case we split the data to training and testing set.
+        # In the case of unsupervised learning, we consider the whole data as a training set
         solution = 0.0
         res = (model, True)
 
@@ -71,14 +71,17 @@ def contains(point: np.ndarray, largest_bounding_area) -> bool:
 
 
 class MINLPModel:
-    def __init__(self, training_set: np.array, min_volume: float, **kwargs):
+    def __init__(self, training_set: np.array, min_volume, **kwargs):
         # !! This should never happen -> f_hat is zero -> everything anomaleous"
         # -> A test was added to test for this case
+        self.solver_settings = None
         assert min_volume != 0.0, "min_volume is zero"
         self.kwargs = kwargs
         self.training_set = training_set  # a N x d matrix
         # self.testing_set = testing_set
-        self.min_volume = min_volume  # the smallest allowed area
+        self.min_volume = (
+            kwargs["min volume"] if min_volume == "kwargs" else min_volume
+        )  # the smallest allowed area
         self.N, self.d = self.training_set.shape
         self.Nrange, self.drange = (range(x) for x in self.training_set.shape)
         self.largest_bounding_area = self.calculate_largest_bounding_area()
@@ -309,6 +312,7 @@ class MINLPModel:
             if k not in solver_settings:
                 solver_settings[k] = v
 
+        self.solver_settings = solver_settings
         # Old slow solver
         # _ = pyo.SolverFactory("mindtpy").solve(
         #     self.pyomo_model,
@@ -347,7 +351,7 @@ class MINLPModel:
 
     def add_point_to_model(self, point):
         # point to be classified lies in pattern
-        self.point_to_be_classified = point.squeeze()
+        self.point_to_be_classified = point  # .squeeze()
 
         # if np.any(self.testing_set):
         #     # print("extracting index from testing set")
