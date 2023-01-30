@@ -203,7 +203,7 @@ class PatternSpaceIsolationForest:
         samples_tree = dataset["number"].values[indices_samples_tree]
 
         # print("feature_names_in_:",first_tree.tree_.feature_names_in_)
-        # print("dataset['number']:",dataset['number'])
+        # print("data['number']:",data['number'])
         # print("parameters:",first_tree.get_params())
         # print("number of nodes in Tree: ",n_nodes)
         # print("id of the left child of node i or -1 if leaf node: left children: ",children_left)
