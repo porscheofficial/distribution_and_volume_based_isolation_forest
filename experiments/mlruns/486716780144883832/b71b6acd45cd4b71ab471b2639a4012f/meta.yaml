@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/p390943/DataspellProjects/pac-learning/experiments/mlruns/486716780144883832/b71b6acd45cd4b71ab471b2639a4012f/artifacts
+end_time: 1674819909979
+entry_point_name: ''
+experiment_id: '486716780144883832'
+lifecycle_stage: active
+run_id: b71b6acd45cd4b71ab471b2639a4012f
+run_name: whimsical-bird-131
+run_uuid: b71b6acd45cd4b71ab471b2639a4012f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674819901405
+status: 3
+tags: []
+user_id: p390943

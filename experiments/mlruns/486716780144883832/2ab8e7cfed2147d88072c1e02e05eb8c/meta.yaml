@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/p390943/DataspellProjects/pac-learning/experiments/mlruns/486716780144883832/2ab8e7cfed2147d88072c1e02e05eb8c/artifacts
+end_time: 1674820131583
+entry_point_name: ''
+experiment_id: '486716780144883832'
+lifecycle_stage: active
+run_id: 2ab8e7cfed2147d88072c1e02e05eb8c
+run_name: nervous-sponge-269
+run_uuid: 2ab8e7cfed2147d88072c1e02e05eb8c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674820116662
+status: 3
+tags: []
+user_id: p390943

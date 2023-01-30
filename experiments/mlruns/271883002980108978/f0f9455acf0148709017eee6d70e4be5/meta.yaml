@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/p390943/DataspellProjects/pac-learning/experiments/mlruns/271883002980108978/f0f9455acf0148709017eee6d70e4be5/artifacts
+end_time: 1674906787479
+entry_point_name: ''
+experiment_id: '271883002980108978'
+lifecycle_stage: active
+run_id: f0f9455acf0148709017eee6d70e4be5
+run_name: debonair-bird-613
+run_uuid: f0f9455acf0148709017eee6d70e4be5
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674906593500
+status: 3
+tags: []
+user_id: p390943

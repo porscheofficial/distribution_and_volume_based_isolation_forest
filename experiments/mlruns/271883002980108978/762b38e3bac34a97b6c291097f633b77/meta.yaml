@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/p390943/DataspellProjects/pac-learning/experiments/mlruns/271883002980108978/762b38e3bac34a97b6c291097f633b77/artifacts
+end_time: 1674906555020
+entry_point_name: ''
+experiment_id: '271883002980108978'
+lifecycle_stage: active
+run_id: 762b38e3bac34a97b6c291097f633b77
+run_name: ambitious-elk-50
+run_uuid: 762b38e3bac34a97b6c291097f633b77
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674906381680
+status: 3
+tags: []
+user_id: p390943

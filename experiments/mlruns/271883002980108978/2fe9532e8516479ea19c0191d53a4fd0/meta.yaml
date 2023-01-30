@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/p390943/DataspellProjects/pac-learning/experiments/mlruns/271883002980108978/2fe9532e8516479ea19c0191d53a4fd0/artifacts
+end_time: 1674906381678
+entry_point_name: ''
+experiment_id: '271883002980108978'
+lifecycle_stage: active
+run_id: 2fe9532e8516479ea19c0191d53a4fd0
+run_name: bright-bird-654
+run_uuid: 2fe9532e8516479ea19c0191d53a4fd0
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674906342626
+status: 3
+tags: []
+user_id: p390943

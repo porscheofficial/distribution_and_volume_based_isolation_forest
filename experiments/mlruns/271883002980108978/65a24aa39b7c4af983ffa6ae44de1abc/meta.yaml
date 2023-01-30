@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/p390943/DataspellProjects/pac-learning/experiments/mlruns/271883002980108978/65a24aa39b7c4af983ffa6ae44de1abc/artifacts
+end_time: 1674902571211
+entry_point_name: ''
+experiment_id: '271883002980108978'
+lifecycle_stage: active
+run_id: 65a24aa39b7c4af983ffa6ae44de1abc
+run_name: abrasive-croc-10
+run_uuid: 65a24aa39b7c4af983ffa6ae44de1abc
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674902536783
+status: 3
+tags: []
+user_id: p390943

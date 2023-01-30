@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/p390943/DataspellProjects/pac-learning/experiments/mlruns/271883002980108978/a336cb61b8ac4f3bb3ead60566ce0e8b/artifacts
+end_time: 1674904148810
+entry_point_name: ''
+experiment_id: '271883002980108978'
+lifecycle_stage: active
+run_id: a336cb61b8ac4f3bb3ead60566ce0e8b
+run_name: languid-lamb-427
+run_uuid: a336cb61b8ac4f3bb3ead60566ce0e8b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674904113882
+status: 3
+tags: []
+user_id: p390943

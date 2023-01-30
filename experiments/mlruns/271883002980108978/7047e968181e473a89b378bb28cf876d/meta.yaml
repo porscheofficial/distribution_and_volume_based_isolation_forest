@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/p390943/DataspellProjects/pac-learning/experiments/mlruns/271883002980108978/7047e968181e473a89b378bb28cf876d/artifacts
+end_time: 1674905907873
+entry_point_name: ''
+experiment_id: '271883002980108978'
+lifecycle_stage: active
+run_id: 7047e968181e473a89b378bb28cf876d
+run_name: nebulous-ray-464
+run_uuid: 7047e968181e473a89b378bb28cf876d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674905865788
+status: 3
+tags: []
+user_id: p390943

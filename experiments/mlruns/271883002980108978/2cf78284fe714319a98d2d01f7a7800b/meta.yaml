@@ -1,0 +1,16 @@
+artifact_uri: file:///Users/p390943/DataspellProjects/pac-learning/experiments/mlruns/271883002980108978/2cf78284fe714319a98d2d01f7a7800b/artifacts
+deleted_time: 1674908252084
+end_time: 1674890614983
+entry_point_name: ''
+experiment_id: '271883002980108978'
+lifecycle_stage: deleted
+run_id: 2cf78284fe714319a98d2d01f7a7800b
+run_name: polite-worm-605
+run_uuid: 2cf78284fe714319a98d2d01f7a7800b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674890577905
+status: 4
+tags: []
+user_id: p390943

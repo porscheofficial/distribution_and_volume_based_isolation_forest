@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/p390943/DataspellProjects/pac-learning/experiments/mlruns/486716780144883832/15a4bc7cf615450781940ce2dd65e722/artifacts
+end_time: 1674819522814
+entry_point_name: ''
+experiment_id: '486716780144883832'
+lifecycle_stage: active
+run_id: 15a4bc7cf615450781940ce2dd65e722
+run_name: rambunctious-rat-215
+run_uuid: 15a4bc7cf615450781940ce2dd65e722
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674819514493
+status: 3
+tags: []
+user_id: p390943

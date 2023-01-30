@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/p390943/DataspellProjects/pac-learning/experiments/mlruns/486716780144883832/5f97131fd66f4c2bbd8346b5450b0f14/artifacts
+end_time: 1674819997077
+entry_point_name: ''
+experiment_id: '486716780144883832'
+lifecycle_stage: active
+run_id: 5f97131fd66f4c2bbd8346b5450b0f14
+run_name: spiffy-vole-548
+run_uuid: 5f97131fd66f4c2bbd8346b5450b0f14
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674819989168
+status: 3
+tags: []
+user_id: p390943

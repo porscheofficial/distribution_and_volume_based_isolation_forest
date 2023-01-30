@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/p390943/DataspellProjects/pac-learning/experiments/mlruns/486716780144883832/f33cdc4dd10c4ab795f93ca59aa5f673/artifacts
+end_time: 1674820083355
+entry_point_name: ''
+experiment_id: '486716780144883832'
+lifecycle_stage: active
+run_id: f33cdc4dd10c4ab795f93ca59aa5f673
+run_name: mysterious-hog-567
+run_uuid: f33cdc4dd10c4ab795f93ca59aa5f673
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674820067928
+status: 3
+tags: []
+user_id: p390943

@@ -1,0 +1,16 @@
+artifact_uri: file:///Users/p390943/DataspellProjects/pac-learning/experiments/mlruns/271883002980108978/aac046335c8a448186bb3d4cb1c1c6c0/artifacts
+deleted_time: 1674908252042
+end_time: 1674859784983
+entry_point_name: ''
+experiment_id: '271883002980108978'
+lifecycle_stage: deleted
+run_id: aac046335c8a448186bb3d4cb1c1c6c0
+run_name: skillful-gull-148
+run_uuid: aac046335c8a448186bb3d4cb1c1c6c0
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674859744337
+status: 4
+tags: []
+user_id: p390943

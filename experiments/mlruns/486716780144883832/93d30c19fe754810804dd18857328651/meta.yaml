@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/p390943/DataspellProjects/pac-learning/experiments/mlruns/486716780144883832/93d30c19fe754810804dd18857328651/artifacts
+end_time: 1674820059206
+entry_point_name: ''
+experiment_id: '486716780144883832'
+lifecycle_stage: active
+run_id: 93d30c19fe754810804dd18857328651
+run_name: placid-fawn-683
+run_uuid: 93d30c19fe754810804dd18857328651
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674820044411
+status: 3
+tags: []
+user_id: p390943

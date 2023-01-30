@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/p390943/DataspellProjects/pac-learning/experiments/mlruns/271883002980108978/871bab6b5fa841faaeb1eb028c2e127f/artifacts
+end_time: 1674907020285
+entry_point_name: ''
+experiment_id: '271883002980108978'
+lifecycle_stage: active
+run_id: 871bab6b5fa841faaeb1eb028c2e127f
+run_name: languid-squirrel-825
+run_uuid: 871bab6b5fa841faaeb1eb028c2e127f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674906982213
+status: 3
+tags: []
+user_id: p390943

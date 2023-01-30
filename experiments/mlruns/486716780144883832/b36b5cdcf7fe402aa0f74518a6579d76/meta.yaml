@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/p390943/DataspellProjects/pac-learning/experiments/mlruns/486716780144883832/b36b5cdcf7fe402aa0f74518a6579d76/artifacts
+end_time: 1674819853713
+entry_point_name: ''
+experiment_id: '486716780144883832'
+lifecycle_stage: active
+run_id: b36b5cdcf7fe402aa0f74518a6579d76
+run_name: indecisive-colt-247
+run_uuid: b36b5cdcf7fe402aa0f74518a6579d76
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674819839257
+status: 3
+tags: []
+user_id: p390943

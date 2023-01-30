@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/p390943/DataspellProjects/pac-learning/experiments/mlruns/486716780144883832/b195923fdf0d414cb29fb1e09e1c7b0c/artifacts
+end_time: 1674820067926
+entry_point_name: ''
+experiment_id: '486716780144883832'
+lifecycle_stage: active
+run_id: b195923fdf0d414cb29fb1e09e1c7b0c
+run_name: bedecked-rook-702
+run_uuid: b195923fdf0d414cb29fb1e09e1c7b0c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674820059208
+status: 3
+tags: []
+user_id: p390943

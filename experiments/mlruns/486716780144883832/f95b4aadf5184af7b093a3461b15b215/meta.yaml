@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/p390943/DataspellProjects/pac-learning/experiments/mlruns/486716780144883832/f95b4aadf5184af7b093a3461b15b215/artifacts
+end_time: 1674819642847
+entry_point_name: ''
+experiment_id: '486716780144883832'
+lifecycle_stage: active
+run_id: f95b4aadf5184af7b093a3461b15b215
+run_name: nimble-bat-11
+run_uuid: f95b4aadf5184af7b093a3461b15b215
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674819624266
+status: 3
+tags: []
+user_id: p390943

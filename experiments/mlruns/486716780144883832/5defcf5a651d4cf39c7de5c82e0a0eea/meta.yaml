@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/p390943/DataspellProjects/pac-learning/experiments/mlruns/486716780144883832/5defcf5a651d4cf39c7de5c82e0a0eea/artifacts
+end_time: 1674819466427
+entry_point_name: ''
+experiment_id: '486716780144883832'
+lifecycle_stage: active
+run_id: 5defcf5a651d4cf39c7de5c82e0a0eea
+run_name: bright-perch-191
+run_uuid: 5defcf5a651d4cf39c7de5c82e0a0eea
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674819450660
+status: 3
+tags: []
+user_id: p390943

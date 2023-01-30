@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/p390943/DataspellProjects/pac-learning/experiments/mlruns/486716780144883832/dd7a9451ae0f4790aac74f0dec2c9804/artifacts
+end_time: 1674819862278
+entry_point_name: ''
+experiment_id: '486716780144883832'
+lifecycle_stage: active
+run_id: dd7a9451ae0f4790aac74f0dec2c9804
+run_name: sincere-deer-530
+run_uuid: dd7a9451ae0f4790aac74f0dec2c9804
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674819853715
+status: 3
+tags: []
+user_id: p390943

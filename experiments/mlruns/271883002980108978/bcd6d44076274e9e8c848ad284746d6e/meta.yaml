@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/p390943/DataspellProjects/pac-learning/experiments/mlruns/271883002980108978/bcd6d44076274e9e8c848ad284746d6e/artifacts
+end_time: 1674901227161
+entry_point_name: ''
+experiment_id: '271883002980108978'
+lifecycle_stage: active
+run_id: bcd6d44076274e9e8c848ad284746d6e
+run_name: big-wren-518
+run_uuid: bcd6d44076274e9e8c848ad284746d6e
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674899582821
+status: 3
+tags: []
+user_id: p390943

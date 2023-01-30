@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/p390943/DataspellProjects/pac-learning/experiments/mlruns/271883002980108978/d3ed4c0a4de7420ba99d6a4dc564d0bf/artifacts
+end_time: 1674899339404
+entry_point_name: ''
+experiment_id: '271883002980108978'
+lifecycle_stage: active
+run_id: d3ed4c0a4de7420ba99d6a4dc564d0bf
+run_name: bold-koi-805
+run_uuid: d3ed4c0a4de7420ba99d6a4dc564d0bf
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674899205276
+status: 3
+tags: []
+user_id: p390943

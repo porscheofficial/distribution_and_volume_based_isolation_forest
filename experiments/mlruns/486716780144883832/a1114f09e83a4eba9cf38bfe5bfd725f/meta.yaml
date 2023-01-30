@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/p390943/DataspellProjects/pac-learning/experiments/mlruns/486716780144883832/a1114f09e83a4eba9cf38bfe5bfd725f/artifacts
+end_time: 1674819945943
+entry_point_name: ''
+experiment_id: '486716780144883832'
+lifecycle_stage: active
+run_id: a1114f09e83a4eba9cf38bfe5bfd725f
+run_name: wise-cow-473
+run_uuid: a1114f09e83a4eba9cf38bfe5bfd725f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674819932713
+status: 3
+tags: []
+user_id: p390943

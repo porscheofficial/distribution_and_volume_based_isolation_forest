@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/p390943/DataspellProjects/pac-learning/experiments/mlruns/486716780144883832/b8dd54c3e8d14f51a7249f183b9d428a/artifacts
+end_time: 1674819901404
+entry_point_name: ''
+experiment_id: '486716780144883832'
+lifecycle_stage: active
+run_id: b8dd54c3e8d14f51a7249f183b9d428a
+run_name: resilient-zebra-220
+run_uuid: b8dd54c3e8d14f51a7249f183b9d428a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674819885997
+status: 3
+tags: []
+user_id: p390943

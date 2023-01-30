@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/p390943/DataspellProjects/pac-learning/experiments/mlruns/486716780144883832/d2848c5becdc4d119cb6bbf193f2071f/artifacts
+end_time: 1674820044409
+entry_point_name: ''
+experiment_id: '486716780144883832'
+lifecycle_stage: active
+run_id: d2848c5becdc4d119cb6bbf193f2071f
+run_name: stately-horse-501
+run_uuid: d2848c5becdc4d119cb6bbf193f2071f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674820035661
+status: 3
+tags: []
+user_id: p390943

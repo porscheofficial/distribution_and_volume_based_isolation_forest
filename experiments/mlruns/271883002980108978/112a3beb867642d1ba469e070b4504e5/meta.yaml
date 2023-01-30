@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/p390943/DataspellProjects/pac-learning/experiments/mlruns/271883002980108978/112a3beb867642d1ba469e070b4504e5/artifacts
+end_time: 1674898385439
+entry_point_name: ''
+experiment_id: '271883002980108978'
+lifecycle_stage: active
+run_id: 112a3beb867642d1ba469e070b4504e5
+run_name: welcoming-elk-789
+run_uuid: 112a3beb867642d1ba469e070b4504e5
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674898198752
+status: 3
+tags: []
+user_id: p390943

@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/p390943/DataspellProjects/pac-learning/experiments/mlruns/486716780144883832/a8811deca58145d9abc2864f49ba814c/artifacts
+end_time: 1674820019738
+entry_point_name: ''
+experiment_id: '486716780144883832'
+lifecycle_stage: active
+run_id: a8811deca58145d9abc2864f49ba814c
+run_name: unleashed-newt-46
+run_uuid: a8811deca58145d9abc2864f49ba814c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674820010833
+status: 3
+tags: []
+user_id: p390943

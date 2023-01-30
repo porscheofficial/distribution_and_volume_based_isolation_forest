@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/p390943/DataspellProjects/pac-learning/experiments/mlruns/486716780144883832/86d4c5de6d0148519092367f1a392769/artifacts
+end_time: 1674820164179
+entry_point_name: ''
+experiment_id: '486716780144883832'
+lifecycle_stage: active
+run_id: 86d4c5de6d0148519092367f1a392769
+run_name: stylish-doe-400
+run_uuid: 86d4c5de6d0148519092367f1a392769
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674820155735
+status: 3
+tags: []
+user_id: p390943

@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/p390943/DataspellProjects/pac-learning/experiments/mlruns/271883002980108978/9a1e7a31fc984ac3a72995f70e227f4b/artifacts
+end_time: 1674903742985
+entry_point_name: ''
+experiment_id: '271883002980108978'
+lifecycle_stage: active
+run_id: 9a1e7a31fc984ac3a72995f70e227f4b
+run_name: adventurous-colt-148
+run_uuid: 9a1e7a31fc984ac3a72995f70e227f4b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1674903703167
+status: 3
+tags: []
+user_id: p390943
