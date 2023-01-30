@@ -10,7 +10,7 @@ import random
 class SyntheticDatasetGenerator:
     @staticmethod
     def label_dataset(normal_distribution, samples):
-        # sample 90% from normal dataset
+        # sample 90% from normal data
         numbers = random.sample(list(normal_distribution), samples)
 
         # no for not an outlier
@@ -40,7 +40,7 @@ class SyntheticDatasetGenerator:
         normal_distribution = np.random.normal(mean, std, generated_samples)
         dst = pd.DataFrame({"number": normal_distribution})
         self.plot_histogram_of_data(normal_distribution)
-        # func to label dataset
+        # func to label data
         labeled_dataset = self.label_dataset(
             normal_distribution, samples=generated_samples
         )
