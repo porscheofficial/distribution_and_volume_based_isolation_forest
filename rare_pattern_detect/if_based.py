@@ -1,7 +1,8 @@
-from numpy._typing import NDArray
-from sklearn.ensemble import IsolationForest
 import numpy as np
+from joblib import Parallel, delayed
+from numpy._typing import NDArray
 from scipy.special import rel_entr
+from sklearn.ensemble import IsolationForest
 
 
 def calculate_bounding_pattern(X):
@@ -62,15 +63,17 @@ class IFBasedRarePatternDetect(IsolationForest):
         self.bounding_pattern = calculate_bounding_pattern(X)
         self.bounding_volume = area_from_pattern(self.bounding_pattern)
 
-        area_cache = []
-        for tree in self.estimators_:
-            # this introduces a lot of overhead, this should ideally use only the number of leaves.
-            # For a proper implementation, the area should be calculated during fitting the IF and stored in
-            # a custom tree_ class. This would mean prediction speed similar to the original IF.
-            n = tree.tree_.node_count
-            area_cache.append(np.full((n,), fill_value=np.infty))
+        self.area_cache = self._calculate_forest_volumes()
 
-        self.area_cache = area_cache
+        # area_cache = []
+        # for tree in self.estimators_:
+        #     # this introduces a lot of overhead, this should ideally use only the number of leaves.
+        #     # For a proper implementation, the area should be calculated during fitting the IF and stored in
+        #     # a custom tree_ class. This would mean prediction speed similar to the original IF.
+        #     n = tree.tree_.node_count
+        #     area_cache.append(np.full((n,), fill_value=np.infty))
+        #
+        # self.area_cache = area_cache
 
     def get_if_scores(self, X):
         # creating an alias to the original function for conceptual clarity
@@ -98,44 +101,94 @@ class IFBasedRarePatternDetect(IsolationForest):
         """
         return self.score_samples(X, alpha=np.inf)
 
-    def _get_sample_distributions(self, X, normalize=True) -> (NDArray, NDArray):
+    def _calculate_forest_volumes(self):
+        volumes = Parallel(n_jobs=-1, backend="threading")(
+            delayed(self._calculate_tree_volumes)(tree) for tree in self.estimators_
+        )
+        return volumes
+
+    def _calculate_tree_volumes(self, tree):
+        n_nodes = tree.tree_.node_count
+        children_left = tree.tree_.children_left
+        children_right = tree.tree_.children_right
+        feature = tree.tree_.feature
+        threshold = tree.tree_.threshold
+
+        volumes = np.zeros(shape=n_nodes)
+        stack = [
+            (0, self.bounding_pattern)
+        ]  # start with the root node id (0) and its area (0)
+        while len(stack) > 0:
+            # `pop` ensures each node is only visited once
+            node_id, pattern = stack.pop()
+            volumes[node_id] = area_from_pattern(pattern)
+
+            # If the left and right child of a node is not the same we have a split
+            # node
+            is_split_node = children_left[node_id] != children_right[node_id]
+            # If a split node, append left and right children and depth to `stack`
+            # so we can loop through them
+            if is_split_node:
+                pattern_left = pattern.copy()
+                pattern_left[feature[node_id], 1] = threshold[node_id]
+                stack.append((children_left[node_id], pattern_left))
+
+                pattern_right = pattern.copy()
+                pattern_right[feature[node_id], 0] = threshold[node_id]
+                stack.append((children_right[node_id], pattern_right))
+
+        return volumes
+
+    def _get_sample_distributions(self, X) -> (NDArray, NDArray):
         """
         Calculate the density estimates and uniform density masses for the samples under the fitted tree.
         Uses a cache to avoid calculating the area several times.
         :param X: {array-like} with shape (n_samples, n_features)
-        :rtype: ps, us: two {array-like} with shape (n_samples, n_estimators)
+        :rtype: n_samples_in_leaf, us: two {array-like} with shape (n_samples, n_estimators)
         """
+        r = Parallel(n_jobs=-1, backend="threading")(
+            delayed(self._get_tree_samples)(tree, X, self.area_cache[i])
+            for i, tree in enumerate(self.estimators_)
+        )
+
+        n_samples_in_leaf, areas = zip(*r)
+        n_samples_in_leaf = np.array(n_samples_in_leaf).T
+        areas = np.array(areas).T
         n_samples = X.shape[0]
-        samples_in_leaves = np.empty((n_samples, self.n_estimators))
-        areas = np.empty((n_samples, self.n_estimators))
-        for i, tree in enumerate(self.estimators_):
+        return (
+            n_samples_in_leaf / n_samples,
+            areas / self.bounding_volume,
+        )
 
-            # we get the node indices of the leaf nodes, one per sample.
-            leaves_index = tree.apply(X)
-            samples_in_leaves[:, i] = tree.tree_.n_node_samples[leaves_index]
+    def _get_tree_samples(self, tree, X, area_cache):
+        # areas = np.empty((n_samples,))
 
-            # we get the values of the corresponding cache
-            cached_area = self.area_cache[i][leaves_index]  # (n_samples, )
-            # we check which of them have already been calculated
-            cache_is_calculated = cached_area < np.infty  # (n_samples) : bool
-            areas[cache_is_calculated, i] = cached_area[cache_is_calculated]
+        # we get the node indices of the leaf nodes, one per sample.
+        leaves_index = tree.apply(X)
+        samples_in_leaves = tree.tree_.n_node_samples[leaves_index]
+        areas = area_cache[leaves_index]
 
-            cache_not_calculated = np.logical_not(cache_is_calculated)
-            uncached_X = X[cache_not_calculated]
+        # # we get the values of the corresponding cache
+        # cached_area = area_cache[leaves_index]  # (n_samples, )
+        # # we check which of them have already been calculated
+        # cache_is_calculated = cached_area < np.infty  # (n_samples,) : bool
+        # areas[cache_is_calculated] = cached_area[cache_is_calculated]
+        #
+        # cache_not_calculated = np.logical_not(cache_is_calculated)
+        # uncached_X = X[cache_not_calculated]
+        #
+        # # the leaves_indices for which the cache is not calculated
+        # uncached_patterns = leaves_index[cache_not_calculated]
+        #
+        # if len(uncached_patterns) == 0:
+        #     return samples_in_leaves, areas
 
-            # the leaves_indices for which the cache is not calculated
-            uncached_patterns = leaves_index[cache_not_calculated]
-            if len(uncached_patterns) == 0:
-                continue
-
-            new_areas = self._calculate_pattern_area_samples(
-                tree, uncached_X, leaves_index
-            )
-            areas[cache_not_calculated, i] = new_areas
-            self.area_cache[i][uncached_patterns] = new_areas
-
-        if normalize:
-            return samples_in_leaves / n_samples, areas / self.bounding_volume
+        # new_areas = self._calculate_pattern_area_samples(
+        #     tree, uncached_X, leaves_index
+        # )
+        # areas[cache_not_calculated] = new_areas
+        # # TODO: Check whether this actually updates the underlying array and whether it's not too late
+        # area_cache = areas
 
         return samples_in_leaves, areas
 
@@ -148,6 +201,7 @@ class IFBasedRarePatternDetect(IsolationForest):
         areas = np.empty((len(X),))
 
         # inefficient but should be sufficient to get an idea about the method.
+
         for i, x in enumerate(X):
 
             pattern = self.bounding_pattern.copy()  # (d,2)
