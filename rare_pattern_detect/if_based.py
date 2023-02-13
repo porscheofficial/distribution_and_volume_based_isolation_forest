@@ -65,16 +65,6 @@ class IFBasedRarePatternDetect(IsolationForest):
 
         self.area_cache = self._calculate_forest_volumes()
 
-        # area_cache = []
-        # for tree in self.estimators_:
-        #     # this introduces a lot of overhead, this should ideally use only the number of leaves.
-        #     # For a proper implementation, the area should be calculated during fitting the IF and stored in
-        #     # a custom tree_ class. This would mean prediction speed similar to the original IF.
-        #     n = tree.tree_.node_count
-        #     area_cache.append(np.full((n,), fill_value=np.infty))
-        #
-        # self.area_cache = area_cache
-
     def get_if_scores(self, X):
         # creating an alias to the original function for conceptual clarity
         return self.score_samples(X)
@@ -82,8 +72,8 @@ class IFBasedRarePatternDetect(IsolationForest):
     def pac_score_samples(self, X, alpha=np.inf):
         """
         Calculates the scores as exp**-r_alpha(1/n, ps/us)/n, where r_alpha is the alpha renyi-divergence,
-        us are the area probabilities, ps are the density samples and n is the number of estimators in the tree. Note that us and ps itself
-        are positive and less than 1 but not normalized to sum to 1.
+        us are the area probabilities, ps are the density samples and n is the number of estimators in the tree.
+        Note that us and ps itself are positive and less than 1 but not normalized to sum to 1.
         :param X:
         :param alpha:
         :return: scores: array-like of shape (n_samples, )
@@ -161,34 +151,10 @@ class IFBasedRarePatternDetect(IsolationForest):
         )
 
     def _get_tree_samples(self, tree, X, area_cache):
-        # areas = np.empty((n_samples,))
-
         # we get the node indices of the leaf nodes, one per sample.
         leaves_index = tree.apply(X)
         samples_in_leaves = tree.tree_.n_node_samples[leaves_index]
         areas = area_cache[leaves_index]
-
-        # # we get the values of the corresponding cache
-        # cached_area = area_cache[leaves_index]  # (n_samples, )
-        # # we check which of them have already been calculated
-        # cache_is_calculated = cached_area < np.infty  # (n_samples,) : bool
-        # areas[cache_is_calculated] = cached_area[cache_is_calculated]
-        #
-        # cache_not_calculated = np.logical_not(cache_is_calculated)
-        # uncached_X = X[cache_not_calculated]
-        #
-        # # the leaves_indices for which the cache is not calculated
-        # uncached_patterns = leaves_index[cache_not_calculated]
-        #
-        # if len(uncached_patterns) == 0:
-        #     return samples_in_leaves, areas
-
-        # new_areas = self._calculate_pattern_area_samples(
-        #     tree, uncached_X, leaves_index
-        # )
-        # areas[cache_not_calculated] = new_areas
-        # # TODO: Check whether this actually updates the underlying array and whether it's not too late
-        # area_cache = areas
 
         return samples_in_leaves, areas
 
