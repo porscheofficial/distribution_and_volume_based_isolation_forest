@@ -30,9 +30,6 @@ def renyi_divergence(p: NDArray, q: NDArray, alpha: float) -> float:
     :return: array like of shape (n, )
     """
 
-    if p.shape != q.shape:
-        raise ValueError("Input arrays need to have same shape")
-
     if alpha < 0:
         raise ValueError("`alpha` must be a non-negative real number")
 
