@@ -33,22 +33,18 @@ class RenyiIsolationForest(IsolationForest):
                 - 1.0
             )
         denominator = len(self.estimators_) * _average_path_length([self.max_samples_])
-        scores = 2 ** (
-            # For a single training sample, denominator and depth are 0.
-            # Therefore, we set the score manually to 1.
-            -np.divide(
-                depths, denominator, out=np.ones_like(depths), where=denominator != 0
-            )
+        raw_scores = np.divide(
+            depths, denominator, out=np.ones_like(depths), where=denominator != 0
         )
-        return scores
+        return raw_scores
 
     def _compute_chunked_score_samples(self, X):
         n_estimators = self.n_estimators
         scores_per_estimator = self.get_scores_per_estimator(X)
         uniform = np.ones(n_estimators) / n_estimators
 
-        return (
-            np.exp(-renyi_divergence(uniform, scores_per_estimator, self.alpha))
+        return 2 ** (
+            -np.exp(-renyi_divergence(uniform, scores_per_estimator, self.alpha))
             / n_estimators
         )
 
