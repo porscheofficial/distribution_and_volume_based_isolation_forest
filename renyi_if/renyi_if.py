@@ -45,7 +45,7 @@ class RenyiIsolationForest(IsolationForest):
 
         return 2 ** (
             -np.exp(-renyi_divergence(uniform, scores_per_estimator, self.alpha))
-            / n_estimators
+            # / n_estimators
         )
 
     def decision_function(self, X):
