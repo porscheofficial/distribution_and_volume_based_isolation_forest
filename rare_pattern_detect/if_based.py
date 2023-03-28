@@ -38,11 +38,15 @@ def renyi_divergence(p: NDArray, q: NDArray, alpha: float) -> float:
     elif alpha == 1:
         D_alpha = rel_entr(p, q).sum(axis=1)
     elif alpha == np.inf:
+        # ratio = np.divide(p,dd q, out=np.ones_like(p), where=q != 0)
         D_alpha = np.log(np.max(p / q, axis=1))
     else:
-        D_alpha = (
-            1 / (alpha - 1) * np.log(((p**alpha) / (q ** (alpha - 1))).sum(axis=1))
-        )
+        nominator = p**alpha
+        denominator = q ** (alpha - 1)
+        # ratio = np.divide(
+        #     nominator, denominator, out=np.ones_like(nominator), where=denominator != 0
+        # )
+        D_alpha = 1 / (alpha - 1) * np.log((nominator / denominator).sum(axis=1))
 
     return D_alpha
 
@@ -62,11 +66,24 @@ class IFBasedRarePatternDetect(IsolationForest):
 
         self.area_cache = self._calculate_forest_volumes()
 
-    def get_if_scores(self, X):
-        # creating an alias to the original function for conceptual clarity
-        return self.score_samples(X)
+    def decision_function(self, X, alpha: float):
+        # following the convention to return the negated value
 
-    def pac_score_samples(self, X, alpha=np.inf):
+        scores = -self.score_samples(X, alpha)
+
+        if self.contamination == "auto":
+            # 0.5 plays a special role as described in the original paper.
+            # This is because it correspnds to the score of a point that whose raw score is 1. and which hence
+            # behvaes just like the expected average.
+            self.offset_ = 0.5
+
+        else:
+            # else, define offset_ wrt contamination parameter
+            self.offset_ = np.percentile(scores, 100.0 * self.contamination)
+
+        return scores - self.offset_
+
+    def score_samples(self, X, alpha=np.inf):
         """
         Calculates the scores as exp**-r_alpha(1/n, ps/us)/n, where r_alpha is the alpha renyi-divergence,
         us are the area probabilities, ps are the density samples and n is the number of estimators in the tree.
@@ -78,8 +95,12 @@ class IFBasedRarePatternDetect(IsolationForest):
         ps, us = self._get_sample_distributions(X)
         n_estimators = ps.shape[1]
         uniform = np.full_like(ps, 1.0 / n_estimators)
+        denominator = us * n_estimators
+        ratio = np.divide(ps, denominator, out=np.ones_like(ps), where=denominator != 0)
 
-        return np.exp(-renyi_divergence(uniform, ps / us, alpha)) / n_estimators
+        return 2 ** -(
+            np.exp(-renyi_divergence(uniform, ratio, alpha))
+        )  # / n_estimators
 
     def get_pac_rpad_estimate(self, X):
         """
