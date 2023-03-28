@@ -1,5 +1,4 @@
 from enum import Enum
-import math
 
 
 class PatternSpaceType(Enum):
@@ -8,10 +7,13 @@ class PatternSpaceType(Enum):
 
 
 class PatternSpace:
-    def __init__(self, type: PatternSpaceType, cutoff: float = 0):
+    def __init__(self, type: PatternSpaceType, cutoff):
         self.type = type
-        self.cutoff = cutoff
+        self.cutoff = cutoff if cutoff != None else self.calculate_coeff()
+        print("cutoff (patterns.py): ", self.cutoff)
 
+    # min area can be solved with wolfram alpha and then plugged in here
+    # TODO: using simpy to solve the equation directly in python
     def calculate_coeff(self, **kwargs):
         if self.type == PatternSpaceType.AXIS_ALIGNED_HYPER_RECTANGLES:
             epsilon = kwargs["epsilon"]
@@ -19,5 +21,5 @@ class PatternSpace:
             N = kwargs["N"]
             d = kwargs["d"]
             v = 2 * d
-            min_area = 1 / N * math.log(d)  # TODO: FIll in details
-            self.cutoff = min_area
+            raise Exception("Not implemented")
+            # return sympy...
