@@ -94,7 +94,7 @@ class PacRpad:
     def calculate_U_h_forest(self, volumes_pattern_space_forest):
         """
         x : datapoint
-        h : trained set 
+        h : trained set
         |D| : size of training set?
         U_h : The area of the rectangle (pattern) in the pattern space
         """
@@ -109,8 +109,8 @@ class PacRpad:
 def main():
     sim = PacRpad(epsilon=0.1, delta=0.1, mu=0.1)
 
-    # dataset =  custom_dataset_generation(mean=15,std=1,generated_samples=10000)
-    # model, dataset_post_detection = train_IF(dataset, n_estimators=2)
+    # data =  custom_dataset_generation(mean=15,std=1,generated_samples=10000)
+    # pyomo_model, dataset_post_detection = train_IF(data, n_estimators=2)
     # anomaly_detection_results_visualisation(dataset_post_detection)
 
 
