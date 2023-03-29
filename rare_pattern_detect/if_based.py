@@ -65,11 +65,12 @@ class IFBasedRarePatternDetect(IsolationForest):
         self.bounding_volume = area_from_pattern(self.bounding_pattern)
 
         self.area_cache = self._calculate_forest_volumes()
+        return self
 
     def decision_function(self, X, alpha: float):
         # following the convention to return the negated value
 
-        scores = -self.score_samples(X, alpha)
+        scores = -self.pac_score_samples(X, alpha)
 
         if self.contamination == "auto":
             # 0.5 plays a special role as described in the original paper.
@@ -83,7 +84,7 @@ class IFBasedRarePatternDetect(IsolationForest):
 
         return scores - self.offset_
 
-    def score_samples(self, X, alpha=np.inf):
+    def pac_score_samples(self, X, alpha=np.inf):
         """
         Calculates the scores as exp**-r_alpha(1/n, ps/us)/n, where r_alpha is the alpha renyi-divergence,
         us are the area probabilities, ps are the density samples and n is the number of estimators in the tree.
@@ -107,7 +108,7 @@ class IFBasedRarePatternDetect(IsolationForest):
         :param X: {array-like} of shape (n_samples, n_features)
         :return: {array-like} of shape (n_samples, )
         """
-        return self.score_samples(X, alpha=np.inf)
+        return self.pac_score_samples(X, alpha=np.inf)
 
     def _calculate_forest_volumes(self):
         volumes = Parallel(n_jobs=-1, backend="threading")(
