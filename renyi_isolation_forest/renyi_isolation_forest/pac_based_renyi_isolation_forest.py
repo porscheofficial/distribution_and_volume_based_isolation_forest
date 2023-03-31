@@ -1,57 +1,12 @@
 import numpy as np
 from joblib import Parallel, delayed
-from numpy._typing import NDArray
-from scipy.special import rel_entr
+from numpy.typing import NDArray
 from sklearn.ensemble import IsolationForest
 
-
-def calculate_bounding_pattern(X):
-    """
-    This returns the bounding pattern and returns it in the shape (d,2):
-    """
-    d = X.shape[1]
-    result = np.zeros((d, 2), dtype=float)
-    for i in range(d):
-        result[i] = np.array([np.min(X[:, i]), np.max(X[:, i])])
-    return result
+from .utils import renyi_divergence
 
 
-def area_from_pattern(pattern):
-    return np.prod(pattern[:, 1] - pattern[:, 0])
-
-
-def renyi_divergence(p: NDArray, q: NDArray, alpha: float) -> float:
-    """
-    Calculates the alpha-renyi divergence (wrt base 2) between two discrete probability vectors of the same length.
-    :param p: shape (n, d) where d is the dimension of the vector and n is a set of samples for which divergence
-    is calculated.
-    :param q: has to have same shape as p.
-    :param alpha: float, has to be larger than zero
-    :return: array like of shape (n, )
-    """
-
-    if alpha < 0:
-        raise ValueError("`alpha` must be a non-negative real number")
-
-    if alpha == 0:
-        D_alpha = -np.log(np.where(p > 0, q, 0).sum(axis=1))
-    elif alpha == 1:
-        D_alpha = rel_entr(p, q).sum(axis=1)
-    elif alpha == np.inf:
-        # ratio = np.divide(p,dd q, out=np.ones_like(p), where=q != 0)
-        D_alpha = np.log(np.max(p / q, axis=1))
-    else:
-        nominator = p**alpha
-        denominator = q ** (alpha - 1)
-        # ratio = np.divide(
-        #     nominator, denominator, out=np.ones_like(nominator), where=denominator != 0
-        # )
-        D_alpha = 1 / (alpha - 1) * np.log((nominator / denominator).sum(axis=1))
-
-    return D_alpha
-
-
-class IFBasedRarePatternDetect(IsolationForest):
+class PACBasedRenyiIsolationForest(IsolationForest):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.bounding_volume = None
@@ -231,3 +186,18 @@ class IFBasedRarePatternDetect(IsolationForest):
 
             areas[i] = area_from_pattern(pattern)
         return areas
+
+
+def calculate_bounding_pattern(X):
+    """
+    This returns the bounding pattern and returns it in the shape (d,2):
+    """
+    d = X.shape[1]
+    result = np.zeros((d, 2), dtype=float)
+    for i in range(d):
+        result[i] = np.array([np.min(X[:, i]), np.max(X[:, i])])
+    return result
+
+
+def area_from_pattern(pattern):
+    return np.prod(pattern[:, 1] - pattern[:, 0])

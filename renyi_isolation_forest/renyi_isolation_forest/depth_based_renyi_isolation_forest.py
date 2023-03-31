@@ -1,9 +1,9 @@
 from sklearn.ensemble._iforest import IsolationForest, _average_path_length
 import numpy as np
-from rare_pattern_detect.if_based import renyi_divergence
+from .utils import renyi_divergence
 
 
-class RenyiIsolationForest(IsolationForest):
+class DepthBasedRenyiIsolationForest(IsolationForest):
     def __init__(self, alpha: float = 0, **kwargs):
         super().__init__(**kwargs)
         self.alpha = alpha
