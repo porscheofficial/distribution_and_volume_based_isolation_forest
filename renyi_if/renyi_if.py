@@ -38,6 +38,12 @@ class RenyiIsolationForest(IsolationForest):
         )
         return raw_scores
 
+    def predict(self, X):
+        decision_func = self.decision_function(X)
+        is_inlier = np.ones_like(decision_func, dtype=int)
+        is_inlier[decision_func <= 0] = -1
+        return is_inlier
+
     def _compute_chunked_score_samples(self, X):
         n_estimators = self.n_estimators
         scores_per_estimator = self.get_scores_per_estimator(X)
@@ -55,3 +61,6 @@ class RenyiIsolationForest(IsolationForest):
         return -self._compute_chunked_score_samples(
             X,
         )
+
+
+#%%

@@ -67,6 +67,28 @@ class IFBasedRarePatternDetect(IsolationForest):
         self.area_cache = self._calculate_forest_volumes()
         return self
 
+    def predict(self, X, alpha=np.inf):
+        """
+        Predict if a particular sample is an outlier or not.
+
+        Parameters
+        ----------
+        X : {array-like, sparse matrix} of shape (n_samples, n_features)
+            The input samples. Internally, it will be converted to
+            ``dtype=np.float32`` and if a sparse matrix is provided
+            to a sparse ``csr_matrix``.
+
+        Returns
+        -------
+        is_inlier : ndarray of shape (n_samples,)
+            For each observation, tells whether or not (+1 or -1) it should
+            be considered as an inlier according to the fitted model.
+        """
+        decision_func = self.decision_function(X, alpha)
+        is_inlier = np.ones_like(decision_func, dtype=int)
+        is_inlier[decision_func < 0] = -1
+        return is_inlier
+
     def decision_function(self, X, alpha: float):
         # following the convention to return the negated value
 
