@@ -1,26 +1,39 @@
 import numpy as np
 from joblib import Parallel, delayed
 from numpy.typing import NDArray
-from sklearn.ensemble import IsolationForest
+from warnings import warn
+import numbers
+from .utils import renyi_divergence, IsolationForestWithMaxDepth
 
-from .utils import renyi_divergence
 
-
-class PACBasedRenyiIsolationForest(IsolationForest):
-    def __init__(self, **kwargs):
+class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
+    def __init__(self, padding=0.0, **kwargs):
         super().__init__(**kwargs)
         self.bounding_volume = None
         self.area_cache = None
         self.bounding_pattern = None
+        self.padding = padding
 
     def fit(self, X, y=None, sample_weight=None):
         super().fit(X, y, sample_weight)
 
-        self.bounding_pattern = calculate_bounding_pattern(X)
+        self.bounding_pattern = self.calculate_bounding_pattern(X)
         self.bounding_volume = area_from_pattern(self.bounding_pattern)
 
         self.area_cache = self._calculate_forest_volumes()
         return self
+
+    def calculate_bounding_pattern(self, X):
+        """
+        This returns the bounding pattern and returns it in the shape (d,2):
+        """
+        d = X.shape[1]
+        result = np.zeros((d, 2), dtype=float)
+        for i in range(d):
+            result[i] = np.array(
+                [np.min(X[:, i]) - self.padding, np.max(X[:, i]) + self.padding]
+            )
+        return result
 
     def predict(self, X, alpha=np.inf):
         """
@@ -44,7 +57,7 @@ class PACBasedRenyiIsolationForest(IsolationForest):
         is_inlier[decision_func < 0] = -1
         return is_inlier
 
-    def decision_function(self, X, alpha: float):
+    def decision_function(self, X, alpha: float = 0):
         # following the convention to return the negated value
 
         scores = -self.pac_score_samples(X, alpha)
@@ -186,17 +199,6 @@ class PACBasedRenyiIsolationForest(IsolationForest):
 
             areas[i] = area_from_pattern(pattern)
         return areas
-
-
-def calculate_bounding_pattern(X):
-    """
-    This returns the bounding pattern and returns it in the shape (d,2):
-    """
-    d = X.shape[1]
-    result = np.zeros((d, 2), dtype=float)
-    for i in range(d):
-        result[i] = np.array([np.min(X[:, i]), np.max(X[:, i])])
-    return result
 
 
 def area_from_pattern(pattern):

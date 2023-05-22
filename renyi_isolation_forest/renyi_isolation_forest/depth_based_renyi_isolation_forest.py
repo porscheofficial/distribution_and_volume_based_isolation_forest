@@ -1,9 +1,9 @@
-from sklearn.ensemble._iforest import IsolationForest, _average_path_length
+from sklearn.ensemble._iforest import _average_path_length
 import numpy as np
-from .utils import renyi_divergence
+from .utils import renyi_divergence, IsolationForestWithMaxDepth
 
 
-class DepthBasedRenyiIsolationForest(IsolationForest):
+class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         # self.alpha = alpha
@@ -11,7 +11,6 @@ class DepthBasedRenyiIsolationForest(IsolationForest):
     def get_scores_per_estimator(
         self,
         X,
-        alpha,
         subsample_features=False,
     ):
         """
@@ -51,7 +50,7 @@ class DepthBasedRenyiIsolationForest(IsolationForest):
 
     def _compute_chunked_score_samples(self, X, alpha=0):
         n_estimators = self.n_estimators
-        scores_per_estimator = self.get_scores_per_estimator(X, alpha)
+        scores_per_estimator = self.get_scores_per_estimator(X)
         uniform = np.ones(n_estimators) / n_estimators
 
         return 2 ** (
