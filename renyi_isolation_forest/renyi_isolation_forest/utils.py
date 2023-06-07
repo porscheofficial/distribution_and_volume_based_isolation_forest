@@ -1,16 +1,15 @@
 """This is a utils file that contains helper functions."""
 
-import numbers
-import numpy as np
-# https://stackoverflow.com/questions/51487479/module-scipy-special-has-no-expit-member-in-python-scipy
-from scipy.special import rel_entr
 from warnings import warn
+from scipy.special import rel_entr
 from sklearn.ensemble._iforest import (
     IsolationForest,
     check_random_state,
     tree_dtype,
     issparse,
 )
+import numbers
+import numpy as np
 
 
 class IsolationForestWithMaxDepth(IsolationForest):
