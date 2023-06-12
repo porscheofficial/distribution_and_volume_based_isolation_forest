@@ -1,8 +1,0 @@
-LICENSE.TXT
-LICENSE.txt
-pyproject.toml
-setup.cfg
-renyi_isolation_forest/renyi_isolation_forest.egg-info/PKG-INFO
-renyi_isolation_forest/renyi_isolation_forest.egg-info/SOURCES.txt
-renyi_isolation_forest/renyi_isolation_forest.egg-info/dependency_links.txt
-renyi_isolation_forest/renyi_isolation_forest.egg-info/top_level.txt
