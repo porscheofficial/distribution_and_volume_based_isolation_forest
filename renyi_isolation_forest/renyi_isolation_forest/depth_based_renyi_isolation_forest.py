@@ -1,4 +1,4 @@
-"""This file contains a class that wraps around the IsolationForestWithMaxDepth."""
+"""Contain a class that wraps around the IsolationForestWithMaxDepth."""
 
 from sklearn.ensemble._iforest import _average_path_length
 import numpy as np
@@ -7,8 +7,8 @@ from .utils import renyi_divergence, IsolationForestWithMaxDepth
 
 class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
     """
-    This class extends the Isolation Forest algorithm with a 
-    renyi divergence to aggregate the scores.
+
+    Extends the Isolation Forest algorithm with a renyi divergence to aggregate the scores.
     
     Instead of the average over the depths extracted from each tree, 
     the algorithm can select different aggregation functions
@@ -19,7 +19,7 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         Given an small alpha value. For a point to be considered anomalous, 
         The depth reached by the sample must be high for most of the trees. 
         Given a high alpha value. For a point to be considered anomalous, 
-        it is enough to have one tree reaching a high depth. 
+        it is enough to have one tree that isolates the samples at a high depth. 
     """
 
     def __init__(self, **kwargs):
@@ -34,7 +34,9 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         subsample_features=False,
     ):
         """
-        Given a fitted tree and a set of samples, returns for every 
+        Calculate the score for each estimator.
+
+        Given a fitted tree and a set of samples, returns for every
         sample the depths of the point in the estimators.
         
         Parameters
@@ -42,10 +44,15 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         X: array-like of shape (n_samples, n_features)
             contains the features for each sample
 
+        subsample_features: bool
+            True to select a subset of the features that were used by the respective estimator.
+            False to use to the whole set of features.
+
         Returns
         -------
         depths: array-like of shape (n_samples, n_estimators)
             the individual depths reached by each sample for each tree of the forest
+
         """
         n_samples = X.shape[0]
 
@@ -74,19 +81,22 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
 
     def predict(self, X, alpha=0):
         """
-        Given a forest of fitted trees and a set of samples, predict 
-        for a particular sample if it is an anomaly or not.
+        Given a forest of fitted trees and a set of samples, predict for a particular sample if it is an anomaly or not.
         
         Parameters
         ----------
         X: array-like of shape (n_samples, n_features)
             contains the samples and their features
 
+        alpha: float, has to be larger than zero
+            this value is used to define the Renyi divergence
+
         Returns
         -------
         is_inlier: array-like of shape (n_samples)
             For each observation, tells whether or not (+1 or -1) it should
             be considered as an inlier according to the fitted model.
+
         """
         decision_func = self.decision_function(X, alpha)
         is_inlier = np.ones_like(decision_func, dtype=int)
@@ -108,12 +118,16 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         X : {array-like, sparse matrix} of shape (n_samples, n_features)
             The input samples.
 
+        alpha: float, has to be larger than zero
+            this value is used to define the Renyi divergence
+        
         Returns
         -------
         scores : ndarray of shape (n_samples,)
             The anomaly score of the input samples.
             The lower, the more abnormal. Negative scores represent outliers,
             positive scores represent inliers.
+
         """
         scores = self.score_samples(X, alpha)
 
@@ -132,19 +146,22 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
 
     def score_samples(self, X, alpha=0):
         """
-        Compute the anomaly score of an input sample as the aggregated anomaly 
-        score of the trees in the forest using the Renyi divergences.
+        Compute the anomaly score of an input sample as the aggregated anomaly score of the trees in the forest using the Renyi divergences.
 
         Parameters
         ----------
         X : {array-like, sparse matrix} of shape (n_samples, n_features)
             The input samples.
 
+        alpha: float, has to be larger than zero
+            this value is used to define the Renyi divergence
+
         Returns
         -------
         scores : ndarray of shape (n_samples,)
             The anomaly score of the input samples.
             The lower, the more abnormal.
+
         """
         return -self._compute_chunked_score_samples(X, alpha)
 

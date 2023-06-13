@@ -1,6 +1,8 @@
-"""This is a utils file that contains helper functions."""
+"""Contains helper functions."""
 
+import numbers
 from warnings import warn
+import numpy as np
 from scipy.special import rel_entr
 from sklearn.ensemble._iforest import (
     IsolationForest,
@@ -8,14 +10,13 @@ from sklearn.ensemble._iforest import (
     tree_dtype,
     issparse,
 )
-import numbers
-import numpy as np
 
 
 class IsolationForestWithMaxDepth(IsolationForest):
     """
-    This class is a wrapper class around the original Isolation Forest class.
     
+    Wrapper class around the original Isolation Forest class.
+
     It is an extension that allows setting a max depth for the trees of the forest.
 
     Parameters
@@ -24,9 +25,10 @@ class IsolationForestWithMaxDepth(IsolationForest):
         the max depth that can be reached by each tree in the forest when fitting the data
             - If 'auto', then max_depth is equal to int(np.ceil(np.log2(max(max_samples, 2)))).
             - If 'int' then max_depth is equal to the specified integer.
+
     """
 
-    def __init__(self, max_depth="auto", n_estimators=100, **kwargs):
+    def __init__(self, max_depth="auto", **kwargs):
         super().__init__(**kwargs)
         self.max_depth = max_depth
         self.offset_ = None
@@ -34,7 +36,7 @@ class IsolationForestWithMaxDepth(IsolationForest):
 
     def _set_oob_score(self, X, y):
         raise NotImplementedError("OOB score not supported by iforest")
-        
+
     def fit(self, X, y=None, sample_weight=None) -> IsolationForest:
         """
         Fit estimator.
@@ -56,6 +58,7 @@ class IsolationForestWithMaxDepth(IsolationForest):
         -------
         self : object
             Fitted estimator.
+
         """
         self._validate_params()
         X = self._validate_data(X, accept_sparse=["csc"], dtype=tree_dtype)
@@ -87,7 +90,7 @@ class IsolationForestWithMaxDepth(IsolationForest):
             max_samples = int(self.max_samples * X.shape[0])
 
         self.max_samples_ = max_samples
-        
+
         if self.max_depth == "auto":
             max_depth = int(np.ceil(np.log2(max(max_samples, 2))))
         else:
@@ -107,8 +110,9 @@ class IsolationForestWithMaxDepth(IsolationForest):
 
 def renyi_divergence(p_array: np.ndarray, q_array: np.ndarray, alpha: float) -> float:
     """
+    
     Calculate the alpha-renyi divergence.
-
+    
     The alpha-renyi divergence (wrt base 2) is calculated between 
     two discrete probability vectors of the same length.
     
@@ -118,10 +122,12 @@ def renyi_divergence(p_array: np.ndarray, q_array: np.ndarray, alpha: float) -> 
             where d is the dimension of the vector 
             and n is a set of samples for which divergence is calculated.
             probability vector
+
         q_array:  ndarray of shape shape (n, d) 
             where d is the dimension of the vector 
             and n is a set of samples for which divergence is calculated.
             probability vector
+            
         alpha: float, has to be larger than zero
             this value is used to define the Renyi divergence
 
@@ -130,6 +136,7 @@ def renyi_divergence(p_array: np.ndarray, q_array: np.ndarray, alpha: float) -> 
         d_alpha: array like of shape (n, )
             Calculate the renyi divergences for each probability 
             between the two discrete probability vectors
+
     """
     if alpha < 0:
         raise ValueError("`alpha` must be a non-negative real number")

@@ -1,4 +1,4 @@
-"""This file contains a class that wraps around the IsolationForestWithMaxDepth."""
+"""Contain a class that wraps around the IsolationForestWithMaxDepth."""
 
 import numpy as np
 from joblib import Parallel, delayed
@@ -7,7 +7,7 @@ from .utils import renyi_divergence, IsolationForestWithMaxDepth
 
 class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
     """
-    This class extends the Isolation Forest algorithm.
+    Extends the Isolation Forest algorithm.
      
     Instead of using a depth based approach to evaluate the testing points, 
     this method works with a distribution based 
@@ -42,6 +42,7 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         -------
         self : object
             Fitted estimator.
+
         """
         super().fit(X, y, sample_weight)
 
@@ -66,6 +67,7 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         -------
         result: ndarray of shape (d,2).
             bounding pattern
+
         """
         dimension = X.shape[1]
         result = np.zeros((dimension, 2), dtype=float)
@@ -92,6 +94,7 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         is_inlier : ndarray of shape (n_samples,)
             For each observation, tells whether or not (+1 or -1) it should
             be considered as an inlier according to the fitted model.
+
         """
         decision_func = self.decision_function(X, alpha)
         is_inlier = np.ones_like(decision_func, dtype=int)
@@ -121,6 +124,7 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
             The anomaly score of the input samples.
             The lower, the more abnormal. Negative scores represent outliers,
             positive scores represent inliers.
+
         """
         # following the convention to return the negated value
 
@@ -160,6 +164,7 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         -------
         scores: array-like of shape (n_samples, )
             calculated renyi scores
+
         """
         average_samples_in_leaf, f_hat = self._get_sample_distributions(X)
         n_estimators = average_samples_in_leaf.shape[1]
@@ -185,7 +190,8 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
 
         Returns
         -------
-            result: {array-like} of shape (n_samples, )
+            result: {array-like} of shape (n_samples)
+
         """
         return self._pac_score_samples(X, alpha=np.inf)
 
@@ -239,9 +245,12 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         X: {array-like} with shape (n_samples, n_features)
             The input samples.
 
-        return: two {array-like} with shape (n_samples, n_estimators)
+        Returns
+        ------- 
+            two {array-like} with shape (n_samples, n_estimators)
             n_samples_in_leaf / n_samples us
             density estimates
+
         """
         result = Parallel(n_jobs=-1, backend="threading")(
             delayed(self._get_tree_samples)(tree, X, self.area_cache[i])
