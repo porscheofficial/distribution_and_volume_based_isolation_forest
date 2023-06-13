@@ -5,9 +5,14 @@ two algorithms were developed. They are extensions of Isolation Forest. One uses
 correct concept from computational learning theory instead of the depth as a measure for anomaly detection, and both use the Renyi divergences 
 to aggregate the calculated scores.
 
-# Installation 
+# Installation: 
 
 1. First create a new virtual environment for the installation process 
 2. You need to install the packages provided in the requirement files (you can use either pip or conda).
 3. To verify the installation was succesfull, you can run teh python file (script-test-installation.py) and have a look at the output plot. 
-It should be similar to this one: ![succesfull installation](renyi_isolation_forest/images/test-out.png)
+It should be similar to this one: ![succesfull installation](pac-learning/renyi_isolation_forest/images/test-out.png)
+
+
+# Linting:
+- mypy, pylint and pydocstyle were used to format the code. For pydocstyle these error codes were excluded D400, D415, D417, D107, D212, D203 
+and for pylint the following argument was used modules=scipy.special and these error codes were ignored: C0103, E0611
