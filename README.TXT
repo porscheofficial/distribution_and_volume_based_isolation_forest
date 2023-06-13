@@ -10,7 +10,9 @@ to aggregate the calculated scores.
 1. First create a new virtual environment for the installation process 
 2. You need to install the packages provided in the requirement files (you can use either pip or conda).
 3. To verify the installation was succesfull, you can run teh python file (script-test-installation.py) and have a look at the output plot. 
-It should be similar to this one: ![image](https://gitlab.com/porsche-digital/industry-solutions/research/pac-learning/-/blob/linting/renyi_isolation_forest/images/test-out.png)
+It should be similar to this one: 
+
+![image](https://gitlab.com/porsche-digital/industry-solutions/research/pac-learning/-/blob/linting/renyi_isolation_forest/images/test-out.png)
 
 
 # Linting:
