@@ -118,24 +118,24 @@ def renyi_divergence(p_array: np.ndarray, q_array: np.ndarray, alpha: float) -> 
     
     Parameters
     ----------
-        p_array: ndarray of shape shape (n, d) 
-            where d is the dimension of the vector 
-            and n is a set of samples for which divergence is calculated.
-            probability vector
+    p_array: ndarray of shape shape (n, d) 
+        where d is the dimension of the vector 
+        and n is a set of samples for which divergence is calculated.
+        probability vector
 
-        q_array:  ndarray of shape shape (n, d) 
-            where d is the dimension of the vector 
-            and n is a set of samples for which divergence is calculated.
-            probability vector
-            
-        alpha: float, has to be larger than zero
+    q_array:  ndarray of shape shape (n, d) 
+        where d is the dimension of the vector 
+        and n is a set of samples for which divergence is calculated.
+        probability vector
+        
+    alpha: float, has to be larger than zero
             this value is used to define the Renyi divergence
 
     Returns
     -------
-        d_alpha: array like of shape (n, )
-            Calculate the renyi divergences for each probability 
-            between the two discrete probability vectors
+    d_alpha: array like of shape (n, )
+        Calculate the renyi divergences for each probability 
+        between the two discrete probability vectors
 
     """
     if alpha < 0:

@@ -14,5 +14,5 @@ It should be similar to this one: (src/images/test-out.png)
 
 
 # Linting:
-- mypy, pylint and pydocstyle were used to format the code. For pydocstyle these error codes were excluded "D400, D415, D417, D107, D212, D203" 
+- mypy, pylint and pydocstyle were used to format the code. For pydocstyle these error codes were excluded "D400, D107, D212, D203" 
 and for pylint the following argument was used "--ignored-modules=scipy.special" and these error codes were ignored: "C0103, E0611"

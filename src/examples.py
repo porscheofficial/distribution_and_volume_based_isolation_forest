@@ -1,4 +1,4 @@
-"""Test the renyi isolation forest installation"""
+"""Test the renyi isolation forest installation."""
 
 import numpy as np
 import numpy as np
