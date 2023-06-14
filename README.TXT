@@ -12,7 +12,7 @@ to aggregate the calculated scores.
 3. To verify the installation was succesfull, you can run teh python file (script-test-installation.py) and have a look at the output plot. 
 It should be similar to this one: 
 
-![image](https://gitlab.com/porsche-digital/industry-solutions/research/pac-learning/-/blob/linting/src/images/test-out.png)
+![image](pac-learning/src/images/test-out.png)
 
 
 # Linting:
