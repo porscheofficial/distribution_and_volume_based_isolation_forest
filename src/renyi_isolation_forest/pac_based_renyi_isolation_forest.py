@@ -48,8 +48,8 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
 
         self.bounding_pattern = self._calculate_bounding_pattern(X)
         self.bounding_volume = _area_from_pattern(self.bounding_pattern)
-
         self.area_cache = self._calculate_forest_volumes()
+
         return self
 
     def _calculate_bounding_pattern(self, X):
@@ -75,6 +75,7 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
             result[i] = np.array(
                 [np.min(X[:, i]) - self.padding, np.max(X[:, i]) + self.padding]
             )
+
         return result
 
     def predict(self, X, alpha=np.inf):
@@ -99,6 +100,7 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         decision_func = self.decision_function(X, alpha)
         is_inlier = np.ones_like(decision_func, dtype=int)
         is_inlier[decision_func < 0] = -1
+
         return is_inlier
 
     def decision_function(self, X, alpha: float = 0):
@@ -166,7 +168,7 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
             calculated renyi scores
 
         """
-        average_samples_in_leaf, f_hat = self._get_sample_distributions(X)
+        average_samples_in_leaf, f_hat = self.get_sample_distributions(X)
         n_estimators = average_samples_in_leaf.shape[1]
         uniform = np.full_like(average_samples_in_leaf, 1.0 / n_estimators)
         denominator = f_hat * n_estimators
@@ -199,6 +201,7 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         volumes = Parallel(n_jobs=-1, backend="threading")(
             delayed(self._calculate_tree_volumes)(tree) for tree in self.estimators_
         )
+
         return volumes
 
     def _calculate_tree_volumes(self, tree):
@@ -233,7 +236,7 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
 
         return volumes
 
-    def _get_sample_distributions(self, X) -> tuple[np.ndarray, np.ndarray]:
+    def get_sample_distributions(self, X) -> tuple[np.ndarray, np.ndarray]:
         """
         Calculate the density estimates and uniform density masses for the samples.
          
@@ -261,6 +264,7 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         n_samples_in_leaf = np.array(n_samples_in_leaf).T
         areas = np.array(areas).T
         n_samples = X.shape[0]
+
         return (
             n_samples_in_leaf / n_samples,
             areas / self.bounding_volume,
@@ -301,6 +305,7 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
                     pattern[feature, 0] = threshold
 
             areas[i] = _area_from_pattern(pattern)
+            
         return areas
 
 

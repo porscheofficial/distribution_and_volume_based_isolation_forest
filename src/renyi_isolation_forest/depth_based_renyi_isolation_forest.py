@@ -77,6 +77,7 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
             depths, denominator,
             out=np.ones_like(depths), where=denominator != 0
         )
+
         return raw_scores
 
     def predict(self, X, alpha=0):
@@ -101,6 +102,7 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         decision_func = self.decision_function(X, alpha)
         is_inlier = np.ones_like(decision_func, dtype=int)
         is_inlier[decision_func <= 0] = -1
+
         return is_inlier
 
     def decision_function(self, X, alpha=0):
