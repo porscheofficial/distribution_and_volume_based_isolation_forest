@@ -12,9 +12,9 @@ to aggregate the calculated scores.
 3. To verify the installation was succesfull, you can run teh python file (script-test-installation.py) and have a look at the output plot. 
 It should be similar to this one: 
 
-![image](https://gitlab.com/porsche-digital/industry-solutions/research/pac-learning/-/blob/linting/renyi_isolation_forest/images/test-out.png)
+![image](https://gitlab.com/porsche-digital/industry-solutions/research/pac-learning/-/blob/linting/src/images/test-out.png)
 
 
 # Linting:
-- mypy, pylint and pydocstyle were used to format the code. For pydocstyle these error codes were excluded D400, D415, D417, D107, D212, D203 
-and for pylint the following argument was used modules=scipy.special and these error codes were ignored: C0103, E0611
+- mypy, pylint and pydocstyle were used to format the code. For pydocstyle these error codes were excluded "D400, D415, D417, D107, D212, D203" 
+and for pylint the following argument was used "--ignored-modules=scipy.special" and these error codes were ignored: "C0103, E0611"
