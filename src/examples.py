@@ -48,7 +48,16 @@ def generate_dataset_by_norm(d, N, contamination, random_process = np.random.ran
 
 depth = 8 
 alpha = 1.0
-data, anomaly = generate_dataset_by_norm(d=2, N=256, contamination=0.1, random_process=np.random.randn, norm_order=2) 
+dimensions = 2
+samples = 256
+contamination = 0.1 
+norm = 2 
+
+data, anomaly = generate_dataset_by_norm(d=dimensions, 
+                                         N=samples, 
+                                         contamination=contamination, 
+                                         random_process=np.random.randn, 
+                                         norm_order=norm) 
 
 
 # Example with depth based renyi isolation forest
