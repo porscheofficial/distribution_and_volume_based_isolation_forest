@@ -36,7 +36,7 @@ def generate_dataset_by_norm(d, N, contamination, random_process = np.random.ran
         contains the inliers and outliers.
     
     anomaly: of shape(n_outliers,d)
-        contains the outliers.
+        contains the labels.
 
     """
     data = random_process(N, d)
