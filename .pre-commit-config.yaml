@@ -11,7 +11,7 @@ repos:
     # rev: pylint-2.17.4
     hooks:
     - id: pylint
-    - name: pylint
+      name: pylint
       args: 
       - --ignored-modules=scipy.special
       - --ignore=C0103,E0611
