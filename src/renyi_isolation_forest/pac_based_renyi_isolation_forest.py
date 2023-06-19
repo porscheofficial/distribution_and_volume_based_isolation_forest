@@ -8,9 +8,9 @@ from .utils import renyi_divergence, IsolationForestWithMaxDepth
 class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
     """
     Extends the Isolation Forest algorithm.
-     
-    Instead of using a depth based approach to evaluate the testing points, 
-    this method works with a distribution based 
+
+    Instead of using a depth based approach to evaluate the testing points,
+    this method works with a distribution based
     scoring function and Renyi divergences to aggregate the scores.
     """
 
@@ -55,9 +55,9 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
     def _calculate_bounding_pattern(self, X):
         """
         Calculate the bounding pattern.
-        
+
         The smallest bounding pattern is the one that encompasses all the training data points.
-        
+
         Parameters
         ----------
         X : {array-like, sparse matrix} of shape (n_samples, n_features)
@@ -148,20 +148,20 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
     def _pac_score_samples(self, X, alpha=np.inf):
         """
         Calculate the scores.
-        
+
         Score is calculated as exp**-r_alpha(1/n, ps/us)/n, where r_alpha
         is the alpha renyi-divergence, us are the area probabilities, ps are
         the density samples and n is the number of estimators in the tree.
         Note that us and ps itself are positive and less than
         1 but not normalized to sum to 1.
-        
+
         Parameters
         ----------
         X: {array-like, sparse matrix} of shape (n_samples, n_features)
             The input samples.
         alpha: float between 0 and infinity
             renyi value to modify the aggregation function
-        
+
         Returns
         -------
         scores: array-like of shape (n_samples, )
@@ -239,23 +239,23 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
     def get_sample_distributions(self, X) -> tuple[np.ndarray, np.ndarray]:
         """
         Calculate the density estimates and uniform density masses for the samples.
-         
-        Calculating the densities under the fitted tree. 
+
+        Calculating the densities under the fitted tree.
         Uses a cache to avoid calculating the area several times.
-        
+
         Parameters
         ----------
         X: {array-like} with shape (n_samples, n_features)
             The input samples.
 
         Returns
-        ------- 
+        -------
             two {array-like} with shape (n_samples, n_estimators)
             n_samples_in_leaf / n_samples us
             density estimates
 
         """
-        result = Parallel(n_jobs=-1, backend="threading")(
+        result = Parallel(ns_jobs=-1, backend="threading")(
             delayed(self._get_tree_samples)(tree, X, self.area_cache[i])
             for i, tree in enumerate(self.estimators_)
         )
@@ -305,7 +305,7 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
                     pattern[feature, 0] = threshold
 
             areas[i] = _area_from_pattern(pattern)
-            
+
         return areas
 
 

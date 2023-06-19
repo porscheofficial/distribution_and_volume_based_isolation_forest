@@ -9,17 +9,17 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
     """
 
     Extends the Isolation Forest algorithm with a renyi divergence to aggregate the scores.
-    
-    Instead of the average over the depths extracted from each tree, 
-    the algorithm can select different aggregation functions
-    to calculate the anomaly score. Using different alpha values leads 
-    to different sensitivity to outliers. 
 
-    Ex: 
-        Given an small alpha value. For a point to be considered anomalous, 
-        The depth reached by the sample must be high for most of the trees. 
-        Given a high alpha value. For a point to be considered anomalous, 
-        it is enough to have one tree that isolates the samples at a high depth. 
+    Instead of the average over the depths extracted from each tree,
+    the algorithm can select different aggregation functions
+    to calculate the anomaly score. Using different alpha values leads
+    to different sensitivity to outliers.
+
+    Ex:
+        Given an small alpha value. For a point to be considered anomalous,
+        The depth reached by the sample must be high for most of the trees.
+        Given a high alpha value. For a point to be considered anomalous,
+        it is enough to have one tree that isolates the samples at a high depth.
     """
 
     def __init__(self, **kwargs):
@@ -38,7 +38,7 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
 
         Given a fitted tree and a set of samples, returns for every
         sample the depths of the point in the estimators.
-        
+
         Parameters
         ----------
         X: array-like of shape (n_samples, n_features)
@@ -74,8 +74,7 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
             )
         denominator = len(self.estimators_) * _average_path_length([self.max_samples_])
         raw_scores = np.divide(
-            depths, denominator,
-            out=np.ones_like(depths), where=denominator != 0
+            depths, denominator, out=np.ones_like(depths), where=denominator != 0
         )
 
         return raw_scores
@@ -83,7 +82,7 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
     def predict(self, X, alpha=0):
         """
         Given a forest of fitted trees and a set of samples, predict for a particular sample if it is an anomaly or not.
-        
+
         Parameters
         ----------
         X: array-like of shape (n_samples, n_features)
@@ -122,7 +121,7 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
 
         alpha: float, has to be larger than zero
             this value is used to define the Renyi divergence
-        
+
         Returns
         -------
         scores : ndarray of shape (n_samples,)
@@ -172,8 +171,7 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         scores_per_estimator = self.get_scores_per_estimator(X)
         uniform = np.ones(n_estimators) / n_estimators
 
-        return 2 ** (
-            -np.exp(-renyi_divergence(uniform, scores_per_estimator, alpha))
-        )
+        return 2 ** (-np.exp(-renyi_divergence(uniform, scores_per_estimator, alpha)))
+
 
 # %%

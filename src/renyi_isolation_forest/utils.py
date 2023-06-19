@@ -14,7 +14,7 @@ from sklearn.ensemble._iforest import (
 
 class IsolationForestWithMaxDepth(IsolationForest):
     """
-    
+
     Wrapper class around the original Isolation Forest class.
 
     It is an extension that allows setting a max depth for the trees of the forest.
@@ -110,31 +110,31 @@ class IsolationForestWithMaxDepth(IsolationForest):
 
 def renyi_divergence(p_array: np.ndarray, q_array: np.ndarray, alpha: float) -> float:
     """
-    
+
     Calculate the alpha-renyi divergence.
-    
-    The alpha-renyi divergence (wrt base 2) is calculated between 
+
+    The alpha-renyi divergence (wrt base 2) is calculated between
     two discrete probability vectors of the same length.
-    
+
     Parameters
     ----------
-    p_array: ndarray of shape shape (n, d) 
-        where d is the dimension of the vector 
+    p_array: ndarray of shape shape (n, d)
+        where d is the dimension of the vector
         and n is a set of samples for which divergence is calculated.
         probability vector
 
-    q_array:  ndarray of shape shape (n, d) 
-        where d is the dimension of the vector 
+    q_array:  ndarray of shape shape (n, d)
+        where d is the dimension of the vector
         and n is a set of samples for which divergence is calculated.
         probability vector
-        
+
     alpha: float, has to be larger than zero
             this value is used to define the Renyi divergence
 
     Returns
     -------
     d_alpha: array like of shape (n, )
-        Calculate the renyi divergences for each probability 
+        Calculate the renyi divergences for each probability
         between the two discrete probability vectors
 
     """
