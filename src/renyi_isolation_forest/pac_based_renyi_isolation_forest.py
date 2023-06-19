@@ -56,7 +56,8 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         """
         Calculate the bounding pattern.
 
-        The smallest bounding pattern is the one that encompasses all the training data points.
+        The smallest bounding pattern is the one that encompasses
+        all the training data points.
 
         Parameters
         ----------
@@ -103,49 +104,7 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
 
         return is_inlier
 
-    def decision_function(self, X, alpha: float = 0):
-        """
-        Aggregate anomaly score of X of the base classifiers.
-
-        The anomaly score of an input sample is computed as
-        the aggregated anomaly score of the trees in the forest.
-        The measure of normality of an observation given a tree is the volume
-        of the area containing this observation
-
-        Parameters
-        ----------
-        X : {array-like, sparse matrix} of shape (n_samples, n_features)
-            The input samples.
-
-        alpha: float between 0 and infinity
-            renyi value to modify the aggregation function
-
-        Returns
-        -------
-        scores : ndarray of shape (n_samples,)
-            The anomaly score of the input samples.
-            The lower, the more abnormal. Negative scores represent outliers,
-            positive scores represent inliers.
-
-        """
-        # following the convention to return the negated value
-
-        scores = -self._pac_score_samples(X, alpha)
-
-        if self.contamination == "auto":
-            # 0.5 plays a special role as described in the original paper.
-            # This is because it correspnds to the score of a point that whose
-            # raw score is 1. and which hence
-            # behvaes just like the expected average.
-            self.offset_ = 0.5
-
-        else:
-            # else, define offset_ wrt contamination parameter
-            self.offset_ = np.percentile(scores, 100.0 * self.contamination)
-
-        return scores - self.offset_
-
-    def _pac_score_samples(self, X, alpha=np.inf):
+    def score_samples(self, X, alpha=np.inf):
         """
         Calculate the scores.
 
@@ -255,7 +214,7 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
             density estimates
 
         """
-        result = Parallel(ns_jobs=-1, backend="threading")(
+        result = Parallel(n_jobs=-1, backend="threading")(
             delayed(self._get_tree_samples)(tree, X, self.area_cache[i])
             for i, tree in enumerate(self.estimators_)
         )

@@ -8,7 +8,7 @@ from .utils import renyi_divergence, IsolationForestWithMaxDepth
 class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
     """
 
-    Extends the Isolation Forest algorithm with a renyi divergence to aggregate the scores.
+    Extends the IF algorithm with a renyi divergence to aggregate the scores.
 
     Instead of the average over the depths extracted from each tree,
     the algorithm can select different aggregation functions
@@ -45,8 +45,8 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
             contains the features for each sample
 
         subsample_features: bool
-            True to select a subset of the features that were used by the respective estimator.
-            False to use to the whole set of features.
+            True to select a subset of the features to use by respective estimator.
+            False to use the whole set of features.
 
         Returns
         -------
@@ -81,7 +81,10 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
 
     def predict(self, X, alpha=0):
         """
-        Given a forest of fitted trees and a set of samples, predict for a particular sample if it is an anomaly or not.
+        Predict the scores.
+
+        Given a forest of fitted trees and a set of samples, predict 
+        for a particular sample if it is an anomaly or not.
 
         Parameters
         ----------
@@ -104,50 +107,12 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
 
         return is_inlier
 
-    def decision_function(self, X, alpha=0):
-        """
-        Aggregate anomaly score of X of the base classifiers.
-
-        The anomaly score of an input sample is computed as
-        the aggregated anomaly score of the trees in the forest.
-        The measure of normality of an observation given a tree is the depth
-        of the leaf containing this observation, which is equivalent to
-        the number of splittings required to isolate this point.
-
-        Parameters
-        ----------
-        X : {array-like, sparse matrix} of shape (n_samples, n_features)
-            The input samples.
-
-        alpha: float, has to be larger than zero
-            this value is used to define the Renyi divergence
-
-        Returns
-        -------
-        scores : ndarray of shape (n_samples,)
-            The anomaly score of the input samples.
-            The lower, the more abnormal. Negative scores represent outliers,
-            positive scores represent inliers.
-
-        """
-        scores = self.score_samples(X, alpha)
-
-        if self.contamination == "auto":
-            # 0.5 plays a special role as described in the original paper.
-            # This is because it correspnds to the score of a point that
-            # whose raw score is 1. and which hence behvaes just like
-            # the expected average.
-            self.offset_ = 0.5
-
-        else:
-            # else, define offset_ wrt contamination parameter
-            self.offset_ = np.percentile(scores, 100.0 * self.contamination)
-
-        return scores - self.offset_
-
     def score_samples(self, X, alpha=0):
         """
-        Compute the anomaly score of an input sample as the aggregated anomaly score of the trees in the forest using the Renyi divergences.
+        Compute the anomaly score.
+         
+        Compute the score for a set of an input sample as the aggregated anomaly score 
+        of the trees in the forest using the Renyi divergences.
 
         Parameters
         ----------

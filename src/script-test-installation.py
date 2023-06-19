@@ -1,7 +1,7 @@
 """Test the renyi dist isolation forest installation."""
 from collections import defaultdict
-from sklearn.metrics import roc_auc_score
 from functools import partial
+from sklearn.metrics import roc_auc_score
 
 import pandas as pd
 import numpy as np
@@ -78,10 +78,10 @@ def generate_screening_dataset(d, N, contamination, random_process, radius, sigm
 
     Parameters
     ----------
-    N : int.
+    N: int.
         number of samples.
 
-    d : int.
+    d: int.
         number of features.
 
     contamination: float between 0 and 1.0
