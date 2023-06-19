@@ -19,7 +19,7 @@ def generate_dataset_by_norm(
     """
     Generate hypersphere points.
 
-    Parameters:
+    Parameters
     ----------
     d : int.
         number of features.
@@ -36,7 +36,7 @@ def generate_dataset_by_norm(
     norm_order: int
         specifies the norm to use.
 
-    Returns:
+    Returns
     -------
     data: of shape(N,d)
         contains the inliers and outliers.
