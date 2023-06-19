@@ -39,7 +39,7 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         Given a fitted tree and a set of samples, returns for every
         sample the depths of the point in the estimators.
 
-        Parameters
+        Parameters:
         ----------
         X: array-like of shape (n_samples, n_features)
             contains the features for each sample
@@ -48,7 +48,7 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
             True to select a subset of the features that were used by the respective estimator.
             False to use to the whole set of features.
 
-        Returns
+        Returns:
         -------
         depths: array-like of shape (n_samples, n_estimators)
             the individual depths reached by each sample for each tree of the forest
@@ -83,7 +83,7 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         """
         Given a forest of fitted trees and a set of samples, predict for a particular sample if it is an anomaly or not.
 
-        Parameters
+        Parameters:
         ----------
         X: array-like of shape (n_samples, n_features)
             contains the samples and their features
@@ -91,7 +91,7 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         alpha: float, has to be larger than zero
             this value is used to define the Renyi divergence
 
-        Returns
+        Returns:
         -------
         is_inlier: array-like of shape (n_samples)
             For each observation, tells whether or not (+1 or -1) it should
@@ -114,7 +114,7 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         of the leaf containing this observation, which is equivalent to
         the number of splittings required to isolate this point.
 
-        Parameters
+        Parameters:
         ----------
         X : {array-like, sparse matrix} of shape (n_samples, n_features)
             The input samples.
@@ -122,7 +122,7 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         alpha: float, has to be larger than zero
             this value is used to define the Renyi divergence
 
-        Returns
+        Returns:
         -------
         scores : ndarray of shape (n_samples,)
             The anomaly score of the input samples.
@@ -149,7 +149,7 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         """
         Compute the anomaly score of an input sample as the aggregated anomaly score of the trees in the forest using the Renyi divergences.
 
-        Parameters
+        Parameters:
         ----------
         X : {array-like, sparse matrix} of shape (n_samples, n_features)
             The input samples.
@@ -157,7 +157,7 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         alpha: float, has to be larger than zero
             this value is used to define the Renyi divergence
 
-        Returns
+        Returns:
         -------
         scores : ndarray of shape (n_samples,)
             The anomaly score of the input samples.

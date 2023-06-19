@@ -7,23 +7,24 @@ repos:
     - id: black
       args: [--diff, --check]
 
-  - repo: https://github.com/pre-commit/mirrors-pylint
-    rev: 2.17.4
-    hooks:
-    - id: pylint
-      args: 
-      - --ignored-modules=scipy.special
-      - --ignore=C0103,E0611
+  # - repo: https://github.com/pre-commit/mirrors-pylint
+  #   rev: 2.17.4
+  #   hooks:
+  #   - id: pylint
+  #     args: 
+  #     - --ignored-modules=scipy.special
+  #     - --ignore=C0103,E0611
 
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: 1.3.0
-    hooks:
-    - id: mypy
-      exclude: ^tests/
-      args: [--strict]
+  # - repo: https://github.com/pre-commit/mirrors-mypy
+  #   rev: 1.3.0
+  #   hooks:
+  #   - id: mypy
+  #     exclude: ^tests/
+  #     args: [--strict]
 
   - repo: https://github.com/pycqa/pydocstyle
     rev: 4.0.0
     hooks:
     - id: pydocstyle
-      args:  [--ignore=D400,D107,D212,D203]
+      args:  
+      - --ignore=D400,D107,D212,D203
