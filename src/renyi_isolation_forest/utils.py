@@ -22,9 +22,9 @@ class IsolationForestWithMaxDepth(IsolationForest):
     Parameters
     ----------
     max_depth : 'auto' or int, default='auto'
-        the max depth that can be reached by each tree in the forest 
+        the max depth that can be reached by each tree in the forest
         when fitting the data
-            - If 'auto', then max_depth is equal to 
+            - If 'auto', then max_depth is equal to
                 int(np.ceil(np.log2(max(max_samples, 2)))).
             - If 'int' then max_depth is equal to the specified integer.
 
@@ -109,7 +109,7 @@ class IsolationForestWithMaxDepth(IsolationForest):
 
         return self
 
-    def decision_function(self, X, alpha: float=0):
+    def decision_function(self, X, alpha: float = 0):
         """
         Aggregate anomaly score of X of the base classifiers.
 
@@ -148,6 +148,7 @@ class IsolationForestWithMaxDepth(IsolationForest):
             self.offset_ = np.percentile(scores, 100.0 * self.contamination)
 
         return scores - self.offset_
+
 
 def renyi_divergence(p_array: np.ndarray, q_array: np.ndarray, alpha: float) -> float:
     """

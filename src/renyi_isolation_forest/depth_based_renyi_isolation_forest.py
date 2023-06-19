@@ -83,7 +83,7 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         """
         Predict the scores.
 
-        Given a forest of fitted trees and a set of samples, predict 
+        Given a forest of fitted trees and a set of samples, predict
         for a particular sample if it is an anomaly or not.
 
         Parameters
@@ -110,8 +110,8 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
     def score_samples(self, X, alpha=0):
         """
         Compute the anomaly score.
-         
-        Compute the score for a set of an input sample as the aggregated anomaly score 
+
+        Compute the score for a set of an input sample as the aggregated anomaly score
         of the trees in the forest using the Renyi divergences.
 
         Parameters
