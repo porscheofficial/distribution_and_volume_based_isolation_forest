@@ -1,7 +1,6 @@
 """Test the renyi isolation forest installation."""
 
 import numpy as np
-import numpy as np
 
 from sklearn.metrics import roc_auc_score
 
@@ -38,32 +37,31 @@ def generate_dataset_by_norm(
 
     Returns
     -------
-    data: of shape(N,d)
+    dataset: of shape(N,d)
         contains the inliers and outliers.
 
-    anomaly: of shape(n_outliers,d)
+    labels: of shape(n_outliers,d)
         contains the labels.
 
     """
-    data = random_process(N, d)
-    anomaly = np.zeros(N, dtype=np.int8)
-    norms = np.linalg.norm(data, ord=norm_order, axis=1)
+    dataset = random_process(N, d)
+    labels = np.zeros(N, dtype=np.int8)
+    norms = np.linalg.norm(dataset, ord=norm_order, axis=1)
     cutoff_idx = N - round(contamination * N)
-    anomaly[np.argsort(norms)[cutoff_idx:]] = 1
-    return data, anomaly
+    labels[np.argsort(norms)[cutoff_idx:]] = 1
+    return dataset, labels
 
 
 depth = 8
 alpha = 1.0
 dimensions = 2
 samples = 256
-contamination = 0.1
 norm = 2
 
 data, anomaly = generate_dataset_by_norm(
     d=dimensions,
     N=samples,
-    contamination=contamination,
+    contamination=0.1,
     random_process=np.random.randn,
     norm_order=norm,
 )
