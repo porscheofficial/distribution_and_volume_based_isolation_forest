@@ -109,6 +109,30 @@ class IsolationForestWithMaxDepth(IsolationForest):
 
         return self
 
+    def score_samples(self, X, alpha:float=0):
+        """
+        Compute the anomaly score.
+
+        Compute the score for a set of an input sample as the aggregated anomaly score
+        of the trees in the forest using the Renyi divergences.
+
+        Parameters
+        ----------
+        X : {array-like, sparse matrix} of shape (n_samples, n_features)
+            The input samples.
+
+        alpha: float, has to be larger than zero
+            this value is used to define the Renyi divergence
+
+        Returns
+        -------
+        scores : ndarray of shape (n_samples,)
+            The anomaly score of the input samples.
+            The lower, the more abnormal.
+
+        """
+        raise NotImplementedError("score_samples score not supported by iforest")
+
     def decision_function(self, X, alpha: float = 0):
         """
         Aggregate anomaly score of X of the base classifiers.
