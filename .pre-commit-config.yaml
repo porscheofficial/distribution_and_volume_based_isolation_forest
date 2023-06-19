@@ -7,8 +7,8 @@ repos:
     - id: black
       args: [--diff, --check]
 
-  - repo: https://github.com/pylint-dev/pylint
-    rev: pylint-2.17.4
+  - repo: local #https://github.com/pylint-dev/pylint
+    # rev: pylint-2.17.4
     hooks:
     - id: pylint
       args: 
