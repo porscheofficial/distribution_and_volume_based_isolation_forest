@@ -154,7 +154,7 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
             result: {array-like} of shape (n_samples)
 
         """
-        return self._pac_score_samples(X, alpha=np.inf)
+        return self.score_samples(X, alpha=np.inf)
 
     def _calculate_forest_volumes(self):
         volumes = Parallel(n_jobs=-1, backend="threading")(
