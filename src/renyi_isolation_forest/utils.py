@@ -109,7 +109,7 @@ class IsolationForestWithMaxDepth(IsolationForest):
 
         return self
 
-    def score_samples(self, X, alpha:float=0):
+    def score_samples(self, X, alpha: float = 0):
         """
         Compute the anomaly score.
 
