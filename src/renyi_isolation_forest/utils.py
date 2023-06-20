@@ -41,7 +41,9 @@ class IsolationForestWithMaxDepth(IsolationForest):
     def _set_oob_score(self, X: np.ndarray, y: np.ndarray) -> None:
         raise NotImplementedError("OOB score not supported by iforest")
 
-    def fit(self, X: np.ndarray, y: np.ndarray = None, sample_weight: np.ndarray = None) -> IsolationForestWithMaxDepth:
+    def fit(
+        self, X: np.ndarray, y: np.ndarray = None, sample_weight: np.ndarray = None
+    ) -> IsolationForestWithMaxDepth:
         """
         Fit estimator.
 
@@ -175,7 +177,9 @@ class IsolationForestWithMaxDepth(IsolationForest):
         return scores - self.offset_
 
 
-def renyi_divergence(p_array: np.ndarray, q_array: np.ndarray, alpha: float) -> np.ndarray:
+def renyi_divergence(
+    p_array: np.ndarray, q_array: np.ndarray, alpha: float
+) -> np.ndarray:
     """
 
     Calculate the alpha-renyi divergence.
