@@ -1,9 +1,9 @@
 """Contain a class that wraps around the IsolationForestWithMaxDepth."""
 
+from __future__ import annotations
 import numpy as np
 from joblib import Parallel, delayed
 from .utils import renyi_divergence, IsolationForestWithMaxDepth
-from __future__ import annotations
 
 
 class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
@@ -139,7 +139,7 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
             where=denominator != 0,
         )
 
-        return 2 ** -(np.exp(-renyi_divergence(uniform, ratio, alpha)))
+        return - 2 ** -(np.exp(-renyi_divergence(uniform, ratio, alpha)))
 
     def get_pac_rpad_estimate(self, X) -> np.ndarray:
         """

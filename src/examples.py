@@ -70,13 +70,13 @@ data, anomaly = generate_dataset_by_norm(
 # Example with depth based renyi isolation forest
 clf = DepthBasedRenyiIsolationForest()
 clf.fit(X=data)
-score = -clf.decision_function(data, alpha)
-roc_auc_score_depth = roc_auc_score(anomaly, score)
+score = clf.decision_function(data, alpha)
+roc_auc_score_depth = roc_auc_score(~anomaly, score)
 print("AUCROC Score for Depth based:", roc_auc_score_depth)
 
 # Example with distribution based renyi isolation forest
 clf = PACBasedRenyiIsolationForest()
 clf.fit(X=data)
-score = -clf.decision_function(data, alpha)
-roc_auc_score_pac = roc_auc_score(anomaly, score)
+score = clf.decision_function(data, alpha)
+roc_auc_score_pac = roc_auc_score(~anomaly, score)
 print("AUCROC Score for PAC based:", roc_auc_score_pac)

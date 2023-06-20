@@ -1,9 +1,9 @@
 """Contains helper functions."""
 
+from __future__ import annotations
 import numbers
 from warnings import warn
 from typing import Union, Any
-from __future__ import annotations
 import numpy as np
 from scipy.special import rel_entr
 from sklearn.ensemble._iforest import (
@@ -162,7 +162,7 @@ class IsolationForestWithMaxDepth(IsolationForest):
         """
         # following the convention to return the negated value
 
-        scores = -self.score_samples(X, alpha)
+        scores = self.score_samples(X, alpha)
 
         if self.contamination == "auto":
             # 0.5 plays a special role as described in the original paper.
