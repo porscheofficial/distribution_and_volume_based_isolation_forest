@@ -8,11 +8,11 @@ to aggregate the calculated scores.
 # Installation: 
 
 1. First create a new virtual environment for the installation process 
-2. You need to install the packages provided in the requirement files (you can use either pip or conda).
+2. You need to install the packages provided in the requirement files with pip.
 3. To verify the installation was succesfull, you can run teh python file (script-test-installation.py) and have a look at the output plot. 
 It should be similar to this one: (src/images/test-out.png)
 
 
 # Linting:
-- mypy, pylint and pydocstyle were used to format the code. For pydocstyle these error codes were excluded "D400, D107, D212, D203" 
-and for pylint the following argument was used "--ignored-modules=scipy.special" and these error codes were ignored: "C0103, E0611"
+- Black, mypy, pylint and pydocstyle were used to format the code. All the documented exceptions can be found in .pre-commit-config.yaml file.
+- to check for linting issues run: pre-commit run --all-file 
