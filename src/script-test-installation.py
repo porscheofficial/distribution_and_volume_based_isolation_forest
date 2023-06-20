@@ -143,7 +143,7 @@ def run_experiment(d_lim, data_generation_process, alpha=0):
     results = pd.DataFrame(columns=names)
     clfs = {name: defaultdict(int) for name in names}
     for d in range(1, d_lim):
-        data, anomaly = data_generation_process(d=d)
+        data, anomaly = data_generation_process(d)
         for clf, name, kwargs in [
             (DepthBasedRenyiIsolationForest, "DepthBased", {"max_depth": d**d}),
             (
@@ -160,7 +160,6 @@ def run_experiment(d_lim, data_generation_process, alpha=0):
 
 generate_screening = partial(
     generate_screening_dataset,
-    d=1,
     N=25600,
     contamination=0.001,
     random_process=np.random.randn,
