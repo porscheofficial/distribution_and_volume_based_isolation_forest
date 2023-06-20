@@ -1,11 +1,11 @@
 """Contain a class that wraps around the IsolationForestWithMaxDepth."""
 
 from __future__ import annotations
+from typing import Optional, Tuple, List
 import numpy as np
 from joblib import Parallel, delayed
-from typing import Optional, Tuple, List
-from .utils import renyi_divergence, IsolationForestWithMaxDepth
 from sklearn.tree._tree import Tree
+from .utils import renyi_divergence, IsolationForestWithMaxDepth
 
 
 class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):

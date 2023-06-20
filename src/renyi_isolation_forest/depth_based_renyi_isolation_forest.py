@@ -1,8 +1,8 @@
 """Contain a class that wraps around the IsolationForestWithMaxDepth."""
 
+from typing import Optional
 from sklearn.ensemble._iforest import _average_path_length
 import numpy as np
-from typing import Optional
 from .utils import renyi_divergence, IsolationForestWithMaxDepth
 
 

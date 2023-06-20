@@ -1,10 +1,10 @@
 """Test the renyi isolation forest installation."""
 
+from typing import Tuple, Callable
 import numpy as np
 
 from sklearn.metrics import roc_auc_score
 
-from typing import Tuple, Callable
 
 from renyi_isolation_forest.pac_based_renyi_isolation_forest import (
     PACBasedRenyiIsolationForest,
@@ -77,23 +77,19 @@ data, anomaly = generate_dataset_by_norm(
 clf = DepthBasedRenyiIsolationForest()
 clf.fit(X=data)
 score = clf.decision_function(data, alpha)
-roc_auc_score_depth = roc_auc_score(~anomaly, score)
-if roc_auc_score_depth > 0.9:
-    print(
-        f"AUCROC score for depth based IF: {roc_auc_score_depth}. Installation successfull"
-    )
+roc_auc_depth = roc_auc_score(~anomaly, score)
+if roc_auc_depth > 0.9:
+    print(f"AUCROC for depth based IF: {roc_auc_depth}. Installation successfull")
 else:
-    print("installation failed for depth based IF. aucroc: ", roc_auc_score_depth)
+    print("installation failed for depth based IF. aucroc: ", roc_auc_depth)
 
 # Example with distribution based renyi isolation forest
 clf = PACBasedRenyiIsolationForest()
 clf.fit(X=data)
 score = clf.decision_function(data, alpha)
-roc_auc_score_pac = roc_auc_score(~anomaly, score)
+roc_auc_pac = roc_auc_score(~anomaly, score)
 
-if roc_auc_score_pac > 0.9:
-    print(
-        f"AUCROC score for PAC based IF: {roc_auc_score_pac}. Installation successfull"
-    )
+if roc_auc_pac > 0.9:
+    print(f"AUCROC for PAC based IF: {roc_auc_pac}. Installation successfull")
 else:
-    print("installation failed for depth based IF. aucroc: ", roc_auc_score_pac)
+    print("installation failed for depth based IF. aucroc: ", roc_auc_pac)

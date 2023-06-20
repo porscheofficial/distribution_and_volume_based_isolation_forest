@@ -34,7 +34,7 @@ class IsolationForestWithMaxDepth(IsolationForest):
 
     def __init__(self, max_depth: Union[int, str] = "auto", **kwargs: str) -> None:
         super().__init__(**kwargs)
-        self.max_depth: Union[int, str] = max_depth
+        self.max_depth = max_depth
         self.offset_: float
         self.max_samples_: int
 
@@ -98,15 +98,19 @@ class IsolationForestWithMaxDepth(IsolationForest):
         self.max_samples_ = max_samples
 
         if self.max_depth == "auto":
-            max_depth = int(np.ceil(np.log2(max(max_samples, 2))))
+            md = int(np.ceil(np.log2(max(max_samples, 2))))
         else:
-            max_depth = self.max_depth
+            md = (
+                self.max_depth
+                if isinstance(self.max_depth, int)
+                else int(self.max_depth)
+            )
 
         super()._fit(
             X,
             y,
             max_samples,
-            max_depth=max_depth,
+            max_depth=md,
             sample_weight=sample_weight,
             check_input=False,
         )
