@@ -3,7 +3,7 @@
 from __future__ import annotations
 import numbers
 from warnings import warn
-from typing import Union, Any
+from typing import Union
 import numpy as np
 from scipy.special import rel_entr
 from sklearn.ensemble._iforest import (
@@ -34,9 +34,9 @@ class IsolationForestWithMaxDepth(IsolationForest):
 
     def __init__(self, max_depth: Union[int, str] = "auto", **kwargs: str) -> None:
         super().__init__(**kwargs)
-        self.max_depth = max_depth
-        self.offset_ = Union[float, int]
-        self.max_samples_ = None
+        self.max_depth: Union[int, str] = max_depth
+        self.offset_: float
+        self.max_samples_: int
 
     def _set_oob_score(self, X: np.ndarray, y: np.ndarray) -> None:
         raise NotImplementedError("OOB score not supported by iforest")

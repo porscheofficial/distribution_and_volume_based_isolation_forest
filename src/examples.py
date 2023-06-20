@@ -4,6 +4,8 @@ import numpy as np
 
 from sklearn.metrics import roc_auc_score
 
+from typing import Tuple, Callable
+
 from renyi_isolation_forest.pac_based_renyi_isolation_forest import (
     PACBasedRenyiIsolationForest,
 )
@@ -13,8 +15,12 @@ from renyi_isolation_forest.depth_based_renyi_isolation_forest import (
 
 
 def generate_dataset_by_norm(
-    d, N, contamination, random_process=np.random.randn, norm_order=2
-):
+    d: int,
+    N: int,
+    contamination: float,
+    random_process: Callable[[int, int], np.ndarray] = np.random.randn,
+    norm_order: int = 2,
+) -> Tuple[np.ndarray, np.ndarray]:
     """
     Generate hypersphere points.
 
@@ -57,7 +63,7 @@ alpha = 1.0
 dimensions = 2
 samples = 256
 norm = 2
-
+print("np.random.randn: ", type(np.random.randn))
 data, anomaly = generate_dataset_by_norm(
     d=dimensions,
     N=samples,
@@ -72,11 +78,22 @@ clf = DepthBasedRenyiIsolationForest()
 clf.fit(X=data)
 score = clf.decision_function(data, alpha)
 roc_auc_score_depth = roc_auc_score(~anomaly, score)
-print("AUCROC Score for Depth based:", roc_auc_score_depth)
+if roc_auc_score_depth > 0.9:
+    print(
+        f"AUCROC score for depth based IF: {roc_auc_score_depth}. Installation successfull"
+    )
+else:
+    print("installation failed for depth based IF. aucroc: ", roc_auc_score_depth)
 
 # Example with distribution based renyi isolation forest
 clf = PACBasedRenyiIsolationForest()
 clf.fit(X=data)
 score = clf.decision_function(data, alpha)
 roc_auc_score_pac = roc_auc_score(~anomaly, score)
-print("AUCROC Score for PAC based:", roc_auc_score_pac)
+
+if roc_auc_score_pac > 0.9:
+    print(
+        f"AUCROC score for PAC based IF: {roc_auc_score_pac}. Installation successfull"
+    )
+else:
+    print("installation failed for depth based IF. aucroc: ", roc_auc_score_pac)
