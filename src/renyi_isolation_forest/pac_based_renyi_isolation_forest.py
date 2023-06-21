@@ -168,7 +168,6 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         volumes = Parallel(n_jobs=-1, backend="threading")(
             delayed(self._calculate_tree_volumes)(tree) for tree in self.estimators_
         )
-        print("volumes: ", type(volumes))
         return volumes
 
     def _calculate_tree_volumes(self, tree: Tree) -> np.ndarray:
