@@ -8,8 +8,9 @@ to aggregate the calculated scores for the anomaly detection.
 # Installation: 
 
 1. First create a new virtual environment for the installation process.
-2. You need to install the packages provided in the requirement file with pip.
-3. To verify the installation was succesfull, you can run the python file (examples.py)
+2. The packages provided in the requirement file need to installed with pip.
+3. To install the "pac_dist_iforest" package run the following instruction: "pip3 install -e ." in the folder where the pyproject.toml file is located.
+4. To verify the installation was succesfull, you can run the python file (examples.py)
 
 Required python packages:
     - cfgv : 3.3.1
