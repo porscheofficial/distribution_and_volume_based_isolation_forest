@@ -1,6 +1,6 @@
 [project]
 name = "pac_dist_iforest"
-version = "0.0.2"
+version = "0.0.3"
 description = "Anomaly Detection Python Package"
 
 requires-python = ">=3.9.6"

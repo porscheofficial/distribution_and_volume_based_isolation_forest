@@ -6,10 +6,10 @@ import numpy as np
 from sklearn.metrics import roc_auc_score
 
 
-from renyi_isolation_forest.pac_based_renyi_isolation_forest import (
+from pac_dist_iforest.pac_based_renyi_isolation_forest import (
     PACBasedRenyiIsolationForest,
 )
-from renyi_isolation_forest.depth_based_renyi_isolation_forest import (
+from pac_dist_iforest.depth_based_renyi_isolation_forest import (
     DepthBasedRenyiIsolationForest,
 )
 
