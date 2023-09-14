@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Reproduction instructions
 
 This directory contains the code required to reproduce the results presented in the submission "Distribution and volume based scoring for Isolation Forests".
