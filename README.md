@@ -1,4 +1,6 @@
-* This branch contains code of the project that didn't make it into the final project. In particular it contains a branch and bound implementation and a mixed integer nonlinear programming approach to implementing an exact HAS_RARE_PATTERN subroutine that provides an alternative to the isolation forest random forest procedure. This turned out to be performing poorly, we leave it here for the interested reader to build on.*
+**This branch contains code of the project that didn't make it into the final project. In particular it contains a branch and bound implementation and a mixed integer nonlinear programming approach to implementing an exact HAS_RARE_PATTERN subroutine that provides an alternative to the isolation forest random forest procedure. This turned out to be performing poorly, we leave it here for the interested reader to build on.**
+
+**Moreover, the requirements from the requirements.txt might not suffice to make the code on this branch work**
 
 # Reproduction instructions
 
