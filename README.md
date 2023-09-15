@@ -13,3 +13,34 @@ The benchmarks are run using the [_**ADBench**: Anomaly Detection Benchmark_](ht
 3. Create a virtual environment (we used Python version 3.9.6) and install the requirements from the `requirements.txt` contained in this folder.
 
 You can then execute the two notebooks required for generating results and plots from the paper as usual.
+
+## How to cite
+
+Please consider citing our paper if you use our code in your project.
+
+XXX UPDATE when uploaded
+
+```
+@bibtex_ref{}
+```
+
+## Contributing
+
+This GNN-based oracle factory is openly developed in the wild and contributions (both internal and external) are highly appreciated.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) on how to get started.
+
+If you have feedback or want to propose a new feature, please [open an issue](https://github.com/porscheofficial/porscheofficial.github.io/issues).
+Thank you! 😊
+
+## Acknowledgements
+
+This project is part of the AI research of [Porsche Digital](https://www.porsche.digital/). ✨
+
+
+## License
+
+Copyright © 2023 Porsche Digital GmbH
+
+Porsche Digital GmbH publishes this open source software and accompanied documentation (if any) subject to the terms of the [MIT license](./LICENSE.md). All rights not explicitly granted to you under the MIT license remain the sole and exclusive property of Porsche Digital GmbH.
+
+Apart from the software and documentation described above, the texts, images, graphics, animations, video and audio files as well as all other contents on this website are subject to the legal provisions of copyright law and, where applicable, other intellectual property rights. The aforementioned proprietary content of this website may not be duplicated, distributed, reproduced, made publicly accessible or otherwise used without the prior consent of the right holder.
