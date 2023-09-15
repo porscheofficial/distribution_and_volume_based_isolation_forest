@@ -1,0 +1,42 @@
+[project]
+name = "pac_dist_iforest"
+version = "0.0.3"
+description = "Anomaly Detection Python Package"
+
+requires-python = ">=3.9.6"
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+authors = [
+    { name="Hichem Dhouib", email="hichem.dhouib@porsche.digital" },
+    { name="Paul Boes", email="paul.boes@porsche.digital" }
+]
+
+readme = "README.md"
+
+[project.urls]
+"Homepage" = "https://gitlab.com/porsche-digital/industry-solutions/research/pac-learning/-/tree/linting/"
+"Bug Tracker" = "https://gitlab.com/porsche-digital/industry-solutions/research/pac-learning/-/issues"
+
+[project.optional-dependencies]
+dev = [
+    "cfgv ~= 3.3.1",
+    "distlib ~= 0.3.6",
+    "filelock ~= 3.12.2",
+    "identify ~= 2.5.24",
+    "joblib ~= 1.2.0",
+    "nodeenv ~= 1.8.0",
+    "numpy ~= 1.25.0",
+    "platformdirs ~= 3.6.0",
+    "pre-commit ~= 3.3.3",
+    "PyYAML ~= 6.0",
+    "scikit-learn ~= 1.2.2",
+    "scipy ~= 1.10.1",
+    "threadpoolctl ~= 3.1.0",
+    "virtualenv ~= 20.23.1",
+]
+

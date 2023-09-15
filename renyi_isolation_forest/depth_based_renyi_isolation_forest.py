@@ -1,5 +1,6 @@
 """Contain a class that wraps around the IsolationForestWithMaxDepth."""
 
+from typing import Optional
 from sklearn.ensemble._iforest import _average_path_length
 import numpy as np
 from .utils import renyi_divergence, IsolationForestWithMaxDepth
@@ -22,17 +23,17 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         it is enough to have one tree that isolates the samples at a high depth.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: str):
         super().__init__(**kwargs)
 
-    def _set_oob_score(self, X, y):
+    def _set_oob_score(self, X: np.ndarray, y: Optional[np.ndarray]) -> None:
         raise NotImplementedError("OOB score not supported by iforest")
 
     def get_scores_per_estimator(
         self,
-        X,
-        subsample_features=False,
-    ):
+        X: np.ndarray,
+        subsample_features: bool = False,
+    ) -> np.ndarray:
         """
         Calculate the score for each estimator.
 
@@ -76,10 +77,9 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         raw_scores = np.divide(
             depths, denominator, out=np.ones_like(depths), where=denominator != 0
         )
-
         return raw_scores
 
-    def predict(self, X, alpha=0):
+    def predict(self, X: np.ndarray, alpha: float = 0.0) -> np.ndarray:
         """
         Predict the scores.
 
@@ -107,7 +107,7 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
 
         return is_inlier
 
-    def score_samples(self, X, alpha=0):
+    def score_samples(self, X: np.ndarray, alpha: float = 0.0) -> np.ndarray:
         """
         Compute the anomaly score.
 
@@ -131,11 +131,12 @@ class DepthBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         """
         return -self._compute_chunked_score_samples(X, alpha)
 
-    def _compute_chunked_score_samples(self, X, alpha=0):
+    def _compute_chunked_score_samples(
+        self, X: np.ndarray, alpha: float = 0.0
+    ) -> np.ndarray:
         n_estimators = self.n_estimators
         scores_per_estimator = self.get_scores_per_estimator(X)
         uniform = np.ones(n_estimators) / n_estimators
-
         return 2 ** (-np.exp(-renyi_divergence(uniform, scores_per_estimator, alpha)))
 
 

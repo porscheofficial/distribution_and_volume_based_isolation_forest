@@ -1,8 +1,10 @@
 """Contain a class that wraps around the IsolationForestWithMaxDepth."""
 
-from typing import Tuple
+from __future__ import annotations
+from typing import Optional, Tuple, List
 import numpy as np
 from joblib import Parallel, delayed
+from sklearn.tree import ExtraTreeRegressor
 from .utils import renyi_divergence, IsolationForestWithMaxDepth
 
 
@@ -15,17 +17,22 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
     scoring function and Renyi divergences to aggregate the scores.
     """
 
-    def __init__(self, padding=0.0, **kwargs):
+    def __init__(self, padding: float = 0.0, **kwargs: str):
         super().__init__(**kwargs)
-        self.bounding_volume = None
-        self.area_cache = None
-        self.bounding_pattern = None
-        self.padding = padding
+        self.bounding_volume: Optional[np.ndarray]
+        self.area_cache: List[float]
+        self.bounding_pattern: np.ndarray
+        self.padding: float = padding
 
-    def _set_oob_score(self, X, y):
+    def _set_oob_score(self, X: np.ndarray, y: np.ndarray) -> None:
         raise NotImplementedError("OOB score not supported by iforest")
 
-    def fit(self, X, y=None, sample_weight=None):
+    def fit(
+        self,
+        X: np.ndarray,
+        y: Optional[np.ndarray] = None,
+        sample_weight: np.ndarray = None,
+    ) -> PACBasedRenyiIsolationForest:
         """
         Fit estimator.
 
@@ -53,7 +60,7 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
 
         return self
 
-    def _calculate_bounding_pattern(self, X):
+    def _calculate_bounding_pattern(self, X: np.ndarray) -> np.ndarray:
         """
         Calculate the bounding pattern.
 
@@ -80,7 +87,7 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
 
         return result
 
-    def predict(self, X, alpha=np.inf):
+    def predict(self, X: np.ndarray, alpha: float = np.inf) -> np.ndarray:
         """
         Predict if a particular sample is an outlier or not.
 
@@ -105,7 +112,7 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
 
         return is_inlier
 
-    def score_samples(self, X, alpha=np.inf):
+    def score_samples(self, X: np.ndarray, alpha: float = np.inf) -> np.ndarray:
         """
         Calculate the scores.
 
@@ -139,9 +146,9 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
             where=denominator != 0,
         )
 
-        return -2 ** -(np.exp(-renyi_divergence(uniform, ratio, alpha)))
+        return -(2 ** -(np.exp(-renyi_divergence(uniform, ratio, alpha))))
 
-    def get_pac_rpad_estimate(self, X):
+    def get_pac_rpad_estimate(self, X: np.ndarray) -> np.ndarray:
         """
         Compute the pac rpad scores.
 
@@ -152,19 +159,18 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
 
         Returns
         -------
-            result: {array-like} of shape (n_samples)
+            result: {array-like} of shape (n_samples, )
 
         """
         return self.score_samples(X, alpha=np.inf)
 
-    def _calculate_forest_volumes(self):
+    def _calculate_forest_volumes(self) -> List[float]:
         volumes = Parallel(n_jobs=-1, backend="threading")(
             delayed(self._calculate_tree_volumes)(tree) for tree in self.estimators_
         )
-
         return volumes
 
-    def _calculate_tree_volumes(self, tree):
+    def _calculate_tree_volumes(self, tree: ExtraTreeRegressor) -> np.ndarray:
         n_nodes = tree.tree_.node_count
         children_left = tree.tree_.children_left
         children_right = tree.tree_.children_right
@@ -196,7 +202,7 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
 
         return volumes
 
-    def get_sample_distributions(self, X) -> Tuple[np.ndarray, np.ndarray]:
+    def get_sample_distributions(self, X: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
         """
         Calculate the density estimates and uniform density masses for the samples.
 
@@ -230,19 +236,41 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
             areas / self.bounding_volume,
         )
 
-    def _get_tree_samples(self, tree, X, area_cache):
+    def _get_tree_samples(
+        self, tree: ExtraTreeRegressor, X: np.ndarray, area_cache: np.ndarray
+    ) -> Tuple[np.ndarray, np.ndarray]:
         # we get the node indices of the leaf nodes, one per sample.
         leaves_index = tree.apply(X)
         samples_in_leaves = tree.tree_.n_node_samples[leaves_index]
         areas = area_cache[leaves_index]
-
         return samples_in_leaves, areas
 
-    def _calculate_pattern_area_samples(self, tree, X, leaves_index):
+    def calculate_pattern_area_samples(
+        self, tree: ExtraTreeRegressor, X: np.ndarray, leaves_index: np.ndarray
+    ) -> np.ndarray:
+        """
+        Calculate the area of the pattern of the samples.
+
+        Parameters
+        ----------
+        tree: ExtraTreeRegressor
+            The underlying ExtraTreeRegressor object.
+
+        X: {array-like} with shape (n_samples, n_features)
+            The input samples.
+
+        leaves_index: {array-like} with shape (n_samples)
+            The indeces of the leaves.
+
+        Returns
+        -------
+        area {array-like} with shape (n_samples, )
+            calculated areas
+
+        """
         node_indicator = tree.decision_path(X)
         features = tree.tree_.feature
         thresholds = tree.tree_.threshold
-
         areas = np.empty((len(X),))
 
         for i, _ in enumerate(X):
@@ -269,5 +297,5 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         return areas
 
 
-def _area_from_pattern(pattern):
+def _area_from_pattern(pattern: np.ndarray) -> np.ndarray:
     return np.prod(pattern[:, 1] - pattern[:, 0])

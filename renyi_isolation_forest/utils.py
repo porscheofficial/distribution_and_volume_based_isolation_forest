@@ -1,7 +1,9 @@
 """Contains helper functions."""
 
+from __future__ import annotations
 import numbers
 from warnings import warn
+from typing import Union
 import numpy as np
 from scipy.special import rel_entr
 from sklearn.ensemble._iforest import (
@@ -30,16 +32,18 @@ class IsolationForestWithMaxDepth(IsolationForest):
 
     """
 
-    def __init__(self, max_depth="auto", **kwargs):
+    def __init__(self, max_depth: Union[int, str] = "auto", **kwargs: str) -> None:
         super().__init__(**kwargs)
         self.max_depth = max_depth
-        self.offset_ = None
-        self.max_samples_ = None
+        self.offset_: float
+        self.max_samples_: int
 
-    def _set_oob_score(self, X, y):
+    def _set_oob_score(self, X: np.ndarray, y: np.ndarray) -> None:
         raise NotImplementedError("OOB score not supported by iforest")
 
-    def fit(self, X, y=None, sample_weight=None) -> IsolationForest:
+    def fit(
+        self, X: np.ndarray, y: np.ndarray = None, sample_weight: np.ndarray = None
+    ) -> IsolationForestWithMaxDepth:
         """
         Fit estimator.
 
@@ -94,22 +98,26 @@ class IsolationForestWithMaxDepth(IsolationForest):
         self.max_samples_ = max_samples
 
         if self.max_depth == "auto":
-            max_depth = int(np.ceil(np.log2(max(max_samples, 2))))
+            md = int(np.ceil(np.log2(max(max_samples, 2))))
         else:
-            max_depth = self.max_depth
+            md = (
+                self.max_depth
+                if isinstance(self.max_depth, int)
+                else int(self.max_depth)
+            )
 
         super()._fit(
             X,
             y,
             max_samples,
-            max_depth=max_depth,
+            max_depth=md,
             sample_weight=sample_weight,
             check_input=False,
         )
 
         return self
 
-    def score_samples(self, X, alpha: float = 0):
+    def score_samples(self, X: np.ndarray, alpha: float = 0.0) -> np.ndarray:
         """
         Compute the anomaly score.
 
@@ -133,7 +141,7 @@ class IsolationForestWithMaxDepth(IsolationForest):
         """
         raise NotImplementedError("score_samples score not supported by iforest")
 
-    def decision_function(self, X, alpha: float = 0):
+    def decision_function(self, X: np.ndarray, alpha: float = 0) -> np.ndarray:
         """
         Aggregate anomaly score of X of the base classifiers.
 
@@ -158,7 +166,7 @@ class IsolationForestWithMaxDepth(IsolationForest):
         """
         # following the convention to return the negated value
 
-        scores = -self.score_samples(X, alpha)
+        scores = self.score_samples(X, alpha)
 
         if self.contamination == "auto":
             # 0.5 plays a special role as described in the original paper.
@@ -166,7 +174,6 @@ class IsolationForestWithMaxDepth(IsolationForest):
             # raw score is 1. and which hence
             # behvaes just like the expected average.
             self.offset_ = 0.5
-
         else:
             # else, define offset_ wrt contamination parameter
             self.offset_ = np.percentile(scores, 100.0 * self.contamination)
@@ -174,7 +181,9 @@ class IsolationForestWithMaxDepth(IsolationForest):
         return scores - self.offset_
 
 
-def renyi_divergence(p_array: np.ndarray, q_array: np.ndarray, alpha: float) -> float:
+def renyi_divergence(
+    p_array: np.ndarray, q_array: np.ndarray, alpha: float
+) -> np.ndarray:
     """
 
     Calculate the alpha-renyi divergence.
