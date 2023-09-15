@@ -139,7 +139,7 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
             where=denominator != 0,
         )
 
-        return -2 ** -(np.exp(-renyi_divergence(uniform, ratio, alpha)))
+        return -(2 ** -(np.exp(-renyi_divergence(uniform, ratio, alpha))))
 
     def get_pac_rpad_estimate(self, X):
         """
