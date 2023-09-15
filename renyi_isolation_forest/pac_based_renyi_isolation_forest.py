@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import Optional, Tuple, List
 import numpy as np
 from joblib import Parallel, delayed
-from sklearn.tree._tree import Tree
+from sklearn.tree import ExtraTreeRegressor
 from .utils import renyi_divergence, IsolationForestWithMaxDepth
 
 
@@ -170,7 +170,7 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         )
         return volumes
 
-    def _calculate_tree_volumes(self, tree: Tree) -> np.ndarray:
+    def _calculate_tree_volumes(self, tree: ExtraTreeRegressor) -> np.ndarray:
         n_nodes = tree.tree_.node_count
         children_left = tree.tree_.children_left
         children_right = tree.tree_.children_right
@@ -237,7 +237,7 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         )
 
     def _get_tree_samples(
-        self, tree: Tree, X: np.ndarray, area_cache: np.ndarray
+        self, tree: ExtraTreeRegressor, X: np.ndarray, area_cache: np.ndarray
     ) -> Tuple[np.ndarray, np.ndarray]:
         # we get the node indices of the leaf nodes, one per sample.
         leaves_index = tree.apply(X)
@@ -246,15 +246,15 @@ class PACBasedRenyiIsolationForest(IsolationForestWithMaxDepth):
         return samples_in_leaves, areas
 
     def calculate_pattern_area_samples(
-        self, tree: Tree, X: np.ndarray, leaves_index: np.ndarray
+        self, tree: ExtraTreeRegressor, X: np.ndarray, leaves_index: np.ndarray
     ) -> np.ndarray:
         """
         Calculate the area of the pattern of the samples.
 
         Parameters
         ----------
-        tree: Tree
-            The underlying Tree object.
+        tree: ExtraTreeRegressor
+            The underlying ExtraTreeRegressor object.
 
         X: {array-like} with shape (n_samples, n_features)
             The input samples.
