@@ -1,6 +1,6 @@
 # Reproduction instructions
 
-This directory contains the code required to reproduce the results presented in the submission "Distribution and volume based scoring for Isolation Forests".
+This directory contains the code required to reproduce the results presented in the paper "Distribution and volume based scoring for Isolation Forests".
 
 ## Setup
 
@@ -37,7 +37,7 @@ XXX UPDATE when uploaded
 
 ## Contributing
 
-This GNN-based oracle factory is openly developed in the wild and contributions (both internal and external) are highly appreciated.
+This repository is openly developed in the wild and contributions (both internal and external) are highly appreciated.
 See [CONTRIBUTING.md](./CONTRIBUTING.md) on how to get started.
 
 If you have feedback or want to propose a new feature, please [open an issue](https://github.com/porscheofficial/porscheofficial.github.io/issues).
