@@ -10,10 +10,23 @@ This directory contains the code required to reproduce the results presented in 
 
 The benchmarks are run using the [_**ADBench**: Anomaly Detection Benchmark_](https://arxiv.org/abs/2206.09426). Hence users are required to set up that benchmark. However, since that benchmark is quite large and we don't require all the packages required in that repository, we ask users to follow the following custom setup instructions
 
-1. Clone the [Github repository](https://github.com/Minqi824/ADBench)
-2. Copy this folder into the root directory of the cloned ADBench repo
-3. Create a virtual environment (we used Python version 3.9.6) and install the requirements from the `requirements.txt` contained in this folder.
+1. In a new folder, check out the [ADBench repository](https://github.com/Minqi824/ADBench) at the NeurIPS2022 commit. Assuming you're using `git > 2.5`:
+    - `git init`
+    - `git remote add origin https://github.com/Minqi824/ADBench`
+    - `git fetch origin 6345a6b35d66b460bd5a590f6db9774e59e71487` (downloads ~2GB)
+    - `git reset --hard FETCH_HEAD`
 
+3. From this directory, clone our repo and replace one of the ADBench repo files:
+    - `git clone https://github.com/porscheofficial/distribution_and_volume_based_isolation_forest.git`
+    - `cd distribution_and_volume_based_isolation_forest`
+    - `mv data_generator.py ../`
+
+5. Create a virtual environment (we used Python version 3.9.6) and install the requirements from the `requirements.txt` contained in this folder:
+    - `pip3.9 install virtualenv`
+    - `python3.9 -m virtualenv venv`
+    - `source venv/bin/activate`
+    - `pip install -r requirements.txt`
+  
 You can then execute the two notebooks required for generating results and plots from the paper as usual.
 
 ## How to cite
