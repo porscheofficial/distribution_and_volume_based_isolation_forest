@@ -30,5 +30,6 @@ repos:
     rev: 4.0.0
     hooks:
     - id: pydocstyle
+      exclude: data_generator.py
       args:  
       - --ignore=D104,D416,D107,D212,D203
