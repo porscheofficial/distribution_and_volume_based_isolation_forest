@@ -1,6 +1,6 @@
 # Reproduction instructions
 
-This directory contains the code required to reproduce the results presented in the paper "Distribution and volume based scoring for Isolation Forests".
+This repository contains the code required to reproduce the results presented in the paper ["Distribution and volume based scoring for Isolation Forests"](https://arxiv.org/abs/2309.11450).
 
 ## Setup
 
@@ -29,10 +29,15 @@ You can then execute the two notebooks required for generating results and plots
 
 Please consider citing our paper if you use our code in your project.
 
-XXX UPDATE when uploaded
-
 ```
-@bibtex_ref{}
+@misc{dhouib2023distribution,
+      title={Distribution and volume based scoring for Isolation Forests}, 
+      author={Hichem Dhouib and Alissa Wilms and Paul Boes},
+      year={2023},
+      eprint={2309.11450},
+      archivePrefix={arXiv},
+      primaryClass={stat.ML}
+}}
 ```
 
 ## Contributing
