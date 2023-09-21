@@ -37,7 +37,7 @@ Please consider citing our paper if you use our code in your project.
       eprint={2309.11450},
       archivePrefix={arXiv},
       primaryClass={stat.ML}
-}}
+}
 ```
 
 ## Contributing
